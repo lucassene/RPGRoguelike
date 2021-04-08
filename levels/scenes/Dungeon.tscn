@@ -1,0 +1,28 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://actors/scenes/Player.tscn" type="PackedScene" id=2]
+[ext_resource path="res://interface/scenes/DungeonHUD.tscn" type="PackedScene" id=3]
+[ext_resource path="res://levels/scripts/Dungeon.gd" type="Script" id=5]
+
+[node name="Dungeon" type="Node2D"]
+script = ExtResource( 5 )
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2( 576, 960 )
+current = true
+
+[node name="CellContainer" type="Node2D" parent="."]
+
+[node name="Players" type="Node2D" parent="."]
+position = Vector2( -64, -64 )
+
+[node name="Player" parent="Players" instance=ExtResource( 2 )]
+position = Vector2( 576, 1344 )
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="HUD" parent="CanvasLayer" instance=ExtResource( 3 )]
+
+[node name="Tween" type="Tween" parent="."]
+[connection signal="direction_pressed" from="CanvasLayer/HUD" to="." method="_on_HUD_direction_pressed"]
+[connection signal="tween_completed" from="Tween" to="." method="_on_Tween_tween_completed"]

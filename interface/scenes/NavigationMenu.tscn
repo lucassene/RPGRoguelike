@@ -18,7 +18,6 @@ __meta__ = {
 }
 
 [node name="WestButton" type="TextureRect" parent="."]
-modulate = Color( 1, 1, 1, 0 )
 margin_left = 50.0
 margin_right = 306.0
 margin_bottom = 256.0
@@ -30,8 +29,20 @@ texture = ExtResource( 1 )
 stretch_mode = 3
 flip_h = true
 
+[node name="WestLabel" type="Label" parent="WestButton"]
+margin_left = 14.0
+margin_right = 88.0
+margin_bottom = 14.0
+rect_scale = Vector2( 3, 3 )
+size_flags_horizontal = 3
+size_flags_vertical = 7
+text = "Tipo"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="NorthButton" type="TextureRect" parent="."]
-modulate = Color( 1, 1, 1, 0 )
 margin_left = 411.0
 margin_right = 667.0
 margin_bottom = 256.0
@@ -42,8 +53,20 @@ size_flags_vertical = 0
 texture = ExtResource( 2 )
 stretch_mode = 4
 
+[node name="NorthLabel" type="Label" parent="NorthButton"]
+margin_left = 5.0
+margin_right = 90.0
+margin_bottom = 14.0
+rect_scale = Vector2( 3, 3 )
+size_flags_horizontal = 3
+size_flags_vertical = 7
+text = "Tipo"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="EastButton" type="TextureRect" parent="."]
-modulate = Color( 1, 1, 1, 0 )
 margin_left = 772.0
 margin_right = 1028.0
 margin_bottom = 256.0
@@ -53,6 +76,19 @@ size_flags_horizontal = 6
 size_flags_vertical = 0
 texture = ExtResource( 1 )
 stretch_mode = 4
+
+[node name="EastLabel" type="Label" parent="EastButton"]
+margin_left = -4.00006
+margin_right = 80.9999
+margin_bottom = 14.0
+rect_scale = Vector2( 3, 3 )
+size_flags_horizontal = 3
+size_flags_vertical = 7
+text = "Tipo"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
 [connection signal="gui_input" from="WestButton" to="." method="_on_WestButton_gui_input"]
 [connection signal="gui_input" from="NorthButton" to="." method="_on_NorthButton_gui_input"]
 [connection signal="gui_input" from="EastButton" to="." method="_on_EastButton_gui_input"]

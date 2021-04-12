@@ -17,6 +17,7 @@ export(Vector2) var npc_spawn = Vector2(4,4)
 var exits = [] setget ,get_exits
 var tile_list = []
 var cell_type setget set_type,get_type
+var cell_data
 var spawn_taken = []
 var enemy_party = []
 var npc
@@ -42,10 +43,11 @@ func _input(event):
 		enemy_party.remove(0)
 		enemy.queue_free()
 
-func initialize(type):
+func initialize(data,type):
+	cell_data = data
 	spawn_taken.clear()
 	set_type(type)
-	_instance_npcs()
+	_populate_cell()
 
 func get_exit_position(direction):
 	for waypoint in waypoint_container.get_children():
@@ -59,23 +61,37 @@ func get_player_spawn():
 	var spawn_point = _get_random_spawn(spawn_range)
 	return map_to_world(spawn_point)
 
-func _instance_npcs():
-	var npcs_needed = CellsDb.get_npcs_needed(cell_type)
+func get_cell_size():
+	var cell_size = get_used_rect().end
+	cell_size.x *= GlobalVars.CELL_SIZE.x
+	cell_size.y *= GlobalVars.CELL_SIZE.y
+	return cell_size
+
+func _populate_cell():
+	var npcs_needed = cell_data.get_npcs_needed(cell_type)
+	match npcs_needed:
+		GlobalVars.ENEMY:
+			_instance_enemies()
+		GlobalVars.NPC:
+			_instance_npc()
+		GlobalVars.ENEMY_NPC:
+			_instance_enemies()
+			_instance_npc()
+
+func _instance_enemies():
 	var enemy_count = _get_enemy_count()
-	if npcs_needed.size() > 0:
-		for actor in npcs_needed:
-			if actor == GlobalVars.ENEMY:
-				var enemy
-				for _x in range(enemy_count):
-					enemy = enemy_scene.instance()
-					npc_container.add_child(enemy)
-					enemy_party.append(enemy)
-					_spawn_enemy(enemy)
-			elif actor == GlobalVars.NPC:
-				var new_npc = npc_scene.instance()
-				npc_container.add_child(new_npc)
-				_spawn_npc(new_npc)
-				npc = new_npc
+	var enemy
+	for _x in range(enemy_count):
+		enemy = enemy_scene.instance()
+		npc_container.add_child(enemy)
+		enemy_party.append(enemy)
+		_spawn_enemy(enemy)
+
+func _instance_npc():
+	var new_npc = npc_scene.instance()
+	npc_container.add_child(new_npc)
+	_spawn_npc(new_npc)
+	npc = new_npc
 
 func _get_actor_spawn(actor_type):
 	var spawn_range = PoolVector2Array()
@@ -118,6 +134,7 @@ func _clear_npcs():
 
 func _get_enemy_count():
 	return randi() % 3 + 1
+
 #func _input(event):
 #	if event is InputEventMouseButton:
 #		var cell = get_cellv(world_to_map(event.position))

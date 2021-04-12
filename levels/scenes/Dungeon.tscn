@@ -29,8 +29,20 @@ tile_data = PoolIntArray( 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0, 4, 1, 0, 5, 1, 0, 
 
 [node name="HUD" parent="CanvasLayer" instance=ExtResource( 3 )]
 
-[node name="Tween" type="Tween" parent="."]
+[node name="CellLabel" type="Label" parent="CanvasLayer"]
+anchor_right = 1.0
+margin_top = 128.0
+margin_right = -536.0
+margin_bottom = 142.0
+rect_scale = Vector2( 2, 2 )
+text = "Nome da Cell"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
-[node name="PlayersTween" type="Tween" parent="."]
+[node name="Tween" type="Tween" parent="."]
+playback_process_mode = 0
 [connection signal="direction_pressed" from="CanvasLayer/HUD" to="." method="_on_HUD_direction_pressed"]
 [connection signal="tween_completed" from="Tween" to="." method="_on_Tween_tween_completed"]

@@ -9,9 +9,13 @@ onready var east_label: Label = $EastButton/EastLabel
 
 signal direction_pressed(direction,cell_type)
 
+var cell_data
 var north_type
 var west_type
 var east_type
+
+func initialize(data):
+	cell_data = data
 
 func update_menu(exits):
 	_reset_menu()
@@ -21,17 +25,17 @@ func update_menu(exits):
 				west_button.modulate.a = 1.0
 				west_button.mouse_filter = MOUSE_FILTER_STOP
 				west_type = exit.type
-				west_label.text = CellsDb.type_strings[exit.type]
+				west_label.text = cell_data.get_cell_type_desc(exit.type)
 			GlobalVars.direction.NORTH:
 				north_button.modulate.a = 1.0
 				north_button.mouse_filter = MOUSE_FILTER_STOP
 				north_type = exit.type
-				north_label.text = CellsDb.type_strings[exit.type]
+				north_label.text = cell_data.get_cell_type_desc(exit.type)
 			GlobalVars.direction.EAST:
 				east_button.modulate.a = 1.0
 				east_button.mouse_filter = MOUSE_FILTER_STOP
 				east_type = exit.type
-				east_label.text = CellsDb.type_strings[exit.type]
+				east_label.text = cell_data.get_cell_type_desc(exit.type)
 
 func _reset_menu():
 	north_type = null

@@ -1,6 +1,8 @@
 extends KinematicBody2D
 class_name Actor
 
+onready var tween: Tween = $Tween
+
 signal destination_reached
 
 const PROXIMITY_THRESHOLD = 3.0
@@ -30,3 +32,6 @@ func _has_arrived():
 		global_position = current_target
 		return true
 	return false
+
+func _on_Tween_tween_completed(_object, _key):
+	pass # Replace with function body.

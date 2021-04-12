@@ -43,3 +43,7 @@ func get_npcs_needed(type):
 func get_cell_type_desc(type):
 	var desc = cells_dao.get_cell_type_desc(type)
 	return desc
+
+func get_cell_group(type):
+	var group = cells_dao.get_cell_group_by_type(type)
+	return group

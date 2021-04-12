@@ -6,6 +6,7 @@
 
 [node name="NPC" instance=ExtResource( 1 )]
 script = ExtResource( 2 )
+type = 1
 
 [node name="Token" parent="." index="0"]
 texture = ExtResource( 3 )

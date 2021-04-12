@@ -33,3 +33,7 @@ static func get_forbidden_cells_by_type(type_id):
 static func get_npcs_by_type(type_id):
 	var query = "SELECT npcs FROM cell_type WHERE ID = %s" % type_id
 	return DataAccess.query(query)[0].npcs
+
+static func get_cell_group_by_type(type_id):
+	var query = "SELECT groupID FROM cell_type WHERE ID = %s" % type_id
+	return DataAccess.query(query)[0].groupID

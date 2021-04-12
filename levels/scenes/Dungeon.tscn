@@ -13,7 +13,7 @@ current = true
 
 [node name="CellContainer" type="Node2D" parent="."]
 
-[node name="Players" type="Node2D" parent="."]
+[node name="Heroes" type="Node2D" parent="."]
 position = Vector2( -64, -64 )
 
 [node name="FadeMap" type="TileMap" parent="."]
@@ -28,19 +28,6 @@ tile_data = PoolIntArray( 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0, 4, 1, 0, 5, 1, 0, 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="HUD" parent="CanvasLayer" instance=ExtResource( 3 )]
-
-[node name="CellLabel" type="Label" parent="CanvasLayer"]
-anchor_right = 1.0
-margin_top = 128.0
-margin_right = -536.0
-margin_bottom = 142.0
-rect_scale = Vector2( 2, 2 )
-text = "Nome da Cell"
-align = 1
-valign = 1
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Tween" type="Tween" parent="."]
 playback_process_mode = 0

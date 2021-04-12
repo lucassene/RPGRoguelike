@@ -2,23 +2,44 @@ extends KinematicBody2D
 class_name Actor
 
 onready var tween: Tween = $Tween
+onready var turn_mark: Sprite = $TurnMark
 
 signal destination_reached
 
 const PROXIMITY_THRESHOLD = 3.0
 export(float) var SPEED = 3.0
+export(GlobalVars.actor_type) var type = GlobalVars.actor_type.PLAYER
 
-var speed_track = []
+var stats = {}
 var current_target = Vector2.ZERO
+var allowed_movement = PoolVector2Array()
+var current_tile = Vector2.ZERO
+var parent_cell setget set_parent_cell
 
-func move_to(target):
-	current_target = target
-
-func spawn(spawn_position):
-	global_position = spawn_position
+func set_parent_cell(value):
+	parent_cell = value
 
 func _physics_process(delta):
 	_move(delta)
+
+func initialize(_actor,cell):
+	parent_cell = cell
+	pass
+
+func move_to(tile,target):
+	parent_cell.remove_from_taken(current_tile)
+	current_tile = tile
+	current_target = target
+
+func spawn(spawn_tile,spawn_position):
+	current_tile = spawn_tile
+	global_position = spawn_position
+
+func begin_turn():
+	turn_mark.show()
+
+func end_turn():
+	turn_mark.hide()
 
 func _move(delta):
 	if current_target != Vector2.ZERO:
@@ -32,6 +53,3 @@ func _has_arrived():
 		global_position = current_target
 		return true
 	return false
-
-func _on_Tween_tween_completed(_object, _key):
-	pass # Replace with function body.

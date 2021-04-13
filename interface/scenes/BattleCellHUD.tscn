@@ -1,10 +1,16 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://interface/scenes/CellHUD.tscn" type="PackedScene" id=1]
 [ext_resource path="res://resources/fonts/roboto-large.tres" type="DynamicFont" id=2]
 [ext_resource path="res://resources/fonts/roboto-huge.tres" type="DynamicFont" id=3]
+[ext_resource path="res://interface/scrips/BattleCellHUD.gd" type="Script" id=5]
 
 [node name="CellHUD" instance=ExtResource( 1 )]
+mouse_filter = 1
+script = ExtResource( 5 )
+
+[node name="MarginContainer" parent="." index="0"]
+mouse_filter = 1
 
 [node name="TopContainer" parent="MarginContainer/VBoxContainer" index="0"]
 margin_bottom = 93.0
@@ -22,6 +28,7 @@ __meta__ = {
 
 [node name="MiddleContainer" parent="MarginContainer/VBoxContainer" index="1"]
 margin_top = 97.0
+margin_bottom = 1540.0
 
 [node name="ReadyLabel" type="Label" parent="MarginContainer/VBoxContainer/MiddleContainer" index="0"]
 visible = false
@@ -36,3 +43,24 @@ valign = 1
 __meta__ = {
 "_editor_description_": ""
 }
+
+[node name="BottomContainer" parent="MarginContainer/VBoxContainer" index="2"]
+margin_top = 1544.0
+
+[node name="SkillsContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/BottomContainer" index="0"]
+margin_right = 960.0
+margin_bottom = 256.0
+rect_min_size = Vector2( 0, 256 )
+mouse_filter = 1
+size_flags_horizontal = 3
+size_flags_vertical = 3
+scroll_vertical_enabled = false
+
+[node name="ButtonContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/BottomContainer/SkillsContainer" index="0"]
+margin_right = 960.0
+margin_bottom = 256.0
+mouse_filter = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/separation = 30
+alignment = 1

@@ -1,8 +1,8 @@
 extends Node2D
 
 onready var hero_scene = preload("res://actors/scenes/Hero.tscn")
-onready var cell_data = preload("res://database/CellData.gd").new()
-onready var hero_data = preload("res://database/HeroData.gd").new()
+onready var cell_repo = preload("res://database/CellRepo.gd").new()
+onready var hero_repo = preload("res://database/HeroRepo.gd").new()
 
 onready var fade_map = $FadeMap
 onready var hud = $CanvasLayer/HUD
@@ -26,25 +26,25 @@ func end_battle():
 	hud.begin_exploration_mode()
 
 func _initialize_data():
-	cell_data.initialize()
-	hero_data.initialize()
+	cell_repo.initialize()
+	hero_repo.initialize()
 
 func _generate_new_cell(cell_type = null):
 	DataAccess.open_database()
 	if cell_type == null: 
-		cell_type = cell_data.get_first_cell_type()
-	var cell = cell_data.get_random_cell(cell_type)
+		cell_type = cell_repo.get_first_cell_type()
+	var cell = cell_repo.get_random_cell(cell_type)
 	cell = load(cell).instance()
 	cell_container.visible = false
 	cell_container.add_child(cell)
 	cell_container.move_child(cell,0)
 	cell_container.visible = true
-	cell.initialize(self,cell_data,cell_type)
+	cell.initialize(self,cell_repo,cell_type)
 	return cell
 
 func _update_hud():
 	current_cell.initialize_hud()
-	hud.initialize(cell_data,current_cell.get_type())
+	hud.initialize(cell_repo,current_cell.get_type())
 	var types = _get_next_cell_types()
 	hud.set_exits(types)
 	DataAccess.close_database()
@@ -57,7 +57,7 @@ func _get_next_cell_types():
 		while exit_done == false:
 			var dict = {
 				direction = exit,
-				type = cell_data.get_random_cell_type(current_cell.get_type())
+				type = cell_repo.get_random_cell_type(current_cell.get_type())
 			}
 			if selected_types.find(dict.type) == -1:
 				selected_types.append(dict.type)
@@ -66,11 +66,11 @@ func _get_next_cell_types():
 	return next_exits
 
 func _instance_heroes():
-	var heroes_stats = hero_data.get_heroes_in_party()
-	for stats in heroes_stats:
+	var heroes = hero_repo.get_heroes_in_party()
+	for hero_data in heroes:
 		var hero = hero_scene.instance()
 		heroes_container.add_child(hero)
-		hero.initialize(stats,current_cell)
+		hero.initialize(hero_repo,hero_data,current_cell)
 		hero.connect("destination_reached",self,"_on_player_reached_destination")
 		_spawn_hero(hero)
 		player_party.append(hero)
@@ -116,10 +116,10 @@ func _tween_cell(tween_target):
 	tween.start()
 
 func _on_player_reached_destination():
-	pass
-#	_fade_heroes()
-#	yield(get_tree().create_timer(0.5),"timeout")
-#	_transition_cell()
+	if not current_cell.is_in_battle():
+		_fade_heroes()
+		yield(get_tree().create_timer(0.5),"timeout")
+		_transition_cell()
 
 func _fade_heroes():
 	for hero in player_party:
@@ -128,12 +128,12 @@ func _fade_heroes():
 func _on_HUD_direction_pressed(direction,cell_type):
 	new_cell = _generate_new_cell(cell_type)
 	transition_direction = direction
-	_fade_heroes()
-	yield(get_tree().create_timer(0.5),"timeout")
-	_transition_cell()
-#	var target = current_cell.get_exit_position(direction)
-#	if target != null:
-#		player_party[0].move_to(target)
+#	_fade_heroes()
+#	yield(get_tree().create_timer(0.5),"timeout")
+#	_transition_cell()
+	var targets = current_cell.get_exit_position(direction)
+	if targets != null:
+		player_party[0].move_to(targets[0],targets[1])
 
 func _on_Tween_tween_completed(object, _key):
 	if object == new_cell:

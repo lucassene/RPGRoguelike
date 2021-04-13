@@ -1,7 +1,7 @@
 extends TileMap
 class_name DungeonCell
 
-onready var enemy_data = preload("res://database/EnemyData.gd").new()
+onready var enemy_repo = preload("res://database/EnemyRepo.gd").new()
 onready var enemy_scene = preload("res://actors/scenes/Enemy.tscn")
 onready var npc_scene = preload("res://actors/scenes/NPC.tscn")
 
@@ -35,6 +35,7 @@ var enemy_party = []
 var player_party = []
 var npc
 var highlighted_tiles = []
+var in_battle = false
 
 func get_exits():
 	return exits
@@ -52,8 +53,9 @@ func _ready():
 		exits.append(waypoint.get_direction())
 
 func initialize(_dungeon,data,type):
+	cell_hud.initialize()
 	dungeon = _dungeon
-	enemy_data.initialize()
+	enemy_repo.initialize()
 	cell_data = data
 	cell_hud.set_cell_label(cell_data.get_cell_type_desc(type))
 	tile_taken.clear()
@@ -66,12 +68,15 @@ func hide_hud():
 func initialize_hud():
 	cell_hud.show()
 
+func is_in_battle():
+	return in_battle
+
 func get_exit_position(direction):
 	for waypoint in waypoint_container.get_children():
 		if waypoint.get_direction() == direction:
 			var wp_coords = waypoint.get_coords()
-			return map_to_world(wp_coords)
-	return Vector2.ZERO
+			return [wp_coords,map_to_world(wp_coords)]
+	return null
 
 func get_hero_spawn():
 	var spawn_range = [hero_spawn_begin,hero_spawn_end]
@@ -168,14 +173,14 @@ func _populate_cell():
 
 func _instance_enemies():
 	var enemy_count = _get_enemy_count()
-	var enemies = enemy_data.get_enemies()
+	var enemies = enemy_repo.get_enemies()
 	var random
 	var enemy
 	for _x in range(enemy_count):
 		random = randi() % enemies.size()
 		enemy = enemy_scene.instance()
 		npc_container.add_child(enemy)
-		enemy.initialize(enemies[random],self)
+		enemy.initialize(enemy_repo,enemies[random],self)
 		enemy_party.append(enemy)
 		_spawn_enemy(enemy)
 

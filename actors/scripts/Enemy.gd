@@ -2,8 +2,8 @@ extends Actor
 
 onready var name_label: Label = $ColorRect/NameLabel
 
-func initialize(actor,cell):
-	.initialize(actor,cell)
+func initialize(actor_repo,actor,cell):
+	.initialize(actor_repo,actor,cell)
 	stats.id = actor.ID
 	stats.actor_name = actor.name
 	stats.max_health = actor.max_health

@@ -14,11 +14,6 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://actors/scripts/Actor.gd"
 }, {
-"base": "Control",
-"class": "CellHUD",
-"language": "GDScript",
-"path": "res://interface/scrips/CellHUD.gd"
-}, {
 "base": "TileMap",
 "class": "DungeonCell",
 "language": "GDScript",
@@ -26,7 +21,6 @@ _global_script_classes=[ {
 } ]
 _global_script_class_icons={
 "Actor": "",
-"CellHUD": "",
 "DungeonCell": ""
 }
 
@@ -40,10 +34,12 @@ config/icon="res://icon.png"
 
 GlobalVars="*res://autoloads/scripts/GlobalVars.gd"
 DataAccess="*res://autoloads/scripts/DataAccess.gd"
+EventHub="*res://autoloads/scripts/EventHub.gd"
 
 [debug]
 
 settings/fps/force_fps=30
+gdscript/warnings/unused_signal=false
 gdscript/warnings/return_value_discarded=false
 
 [display]

@@ -1,8 +1,9 @@
 extends Node2D
 
 onready var hero_scene = preload("res://actors/scenes/Hero.tscn")
-onready var cell_repo = preload("res://database/CellRepo.gd").new()
-onready var hero_repo = preload("res://database/HeroRepo.gd").new()
+onready var cell_repo = preload("res://database/repositories/CellRepo.gd").new()
+onready var hero_repo = preload("res://database/repositories/HeroRepo.gd").new()
+onready var skill_repo = preload("res://database/repositories/SkillRepo.gd").new()
 
 onready var fade_map = $FadeMap
 onready var hud = $CanvasLayer/HUD
@@ -17,20 +18,16 @@ var transition_direction
 
 func _ready():
 	DataAccess.load_database()
-	_initialize_data()
+	_connect_signals()
 	current_cell = _generate_new_cell()
 	_instance_heroes()
+	hud.initialize(cell_repo)
 	_update_hud()
 
-func end_battle():
-	hud.begin_exploration_mode()
-
-func _initialize_data():
-	cell_repo.initialize()
-	hero_repo.initialize()
+func _connect_signals():
+	EventHub.connect("hud_direction_pressed",self,"_on_hud_direction_pressed")
 
 func _generate_new_cell(cell_type = null):
-	DataAccess.open_database()
 	if cell_type == null: 
 		cell_type = cell_repo.get_first_cell_type()
 	var cell = cell_repo.get_random_cell(cell_type)
@@ -39,15 +36,13 @@ func _generate_new_cell(cell_type = null):
 	cell_container.add_child(cell)
 	cell_container.move_child(cell,0)
 	cell_container.visible = true
-	cell.initialize(self,cell_repo,cell_type)
+	cell.initialize(self,cell_repo,skill_repo,cell_type)
 	return cell
 
 func _update_hud():
-	current_cell.initialize_hud()
-	hud.initialize(cell_repo,current_cell.get_type())
+	hud.update_hud(current_cell.get_type())
 	var types = _get_next_cell_types()
 	hud.set_exits(types)
-	DataAccess.close_database()
 
 func _get_next_cell_types():
 	var selected_types = []
@@ -70,7 +65,7 @@ func _instance_heroes():
 	for hero_data in heroes:
 		var hero = hero_scene.instance()
 		heroes_container.add_child(hero)
-		hero.initialize(hero_repo,hero_data,current_cell)
+		hero.initialize(hero_repo,skill_repo,current_cell.get_effect_repo(),hero_data,current_cell)
 		hero.connect("destination_reached",self,"_on_player_reached_destination")
 		_spawn_hero(hero)
 		player_party.append(hero)
@@ -125,12 +120,9 @@ func _fade_heroes():
 	for hero in player_party:
 		hero.fade_out()
 
-func _on_HUD_direction_pressed(direction,cell_type):
+func _on_hud_direction_pressed(direction,cell_type):
 	new_cell = _generate_new_cell(cell_type)
 	transition_direction = direction
-#	_fade_heroes()
-#	yield(get_tree().create_timer(0.5),"timeout")
-#	_transition_cell()
 	var targets = current_cell.get_exit_position(direction)
 	if targets != null:
 		player_party[0].move_to(targets[0],targets[1])

@@ -4,22 +4,28 @@
 [ext_resource path="res://resources/fonts/roboto-medium.tres" type="DynamicFont" id=2]
 [ext_resource path="res://interface/scrips/SkillButton.gd" type="Script" id=3]
 
-[node name="SkillButton" type="TextureButton"]
-margin_left = 367.0
-margin_right = 593.0
+[node name="SkillButton" type="CenterContainer"]
+margin_right = 226.0
 margin_bottom = 226.0
-size_flags_vertical = 0
-texture_normal = ExtResource( 1 )
-stretch_mode = 3
+size_flags_horizontal = 3
 script = ExtResource( 3 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="NameLabel" type="Label" parent="."]
-margin_left = 17.0
-margin_right = 209.0
-margin_bottom = 220.0
+[node name="Button" type="TextureButton" parent="."]
+margin_right = 226.0
+margin_bottom = 226.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture_normal = ExtResource( 1 )
+stretch_mode = 3
+
+[node name="NameLabel" type="Label" parent="Button"]
+margin_left = 16.0
+margin_top = 22.0
+margin_right = 208.0
+margin_bottom = 214.0
 custom_fonts/font = ExtResource( 2 )
 text = "SkillName"
 align = 1
@@ -28,3 +34,4 @@ autowrap = true
 __meta__ = {
 "_edit_use_anchors_": false
 }
+[connection signal="pressed" from="Button" to="." method="_on_Button_pressed"]

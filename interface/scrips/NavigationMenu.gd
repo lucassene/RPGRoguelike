@@ -7,8 +7,6 @@ onready var west_label: Label = $WestButton/WestLabel
 onready var north_label: Label = $NorthButton/NorthLabel
 onready var east_label: Label = $EastButton/EastLabel
 
-signal direction_pressed(direction,cell_type)
-
 var cell_data
 var north_type
 var west_type
@@ -54,15 +52,15 @@ func _reset_menu():
 
 func _on_WestButton_gui_input(event):
 	if event is InputEventScreenTouch and event.is_pressed():
-		emit_signal("direction_pressed",GlobalVars.direction.WEST,west_type)
+		EventHub.emit_signal("hud_direction_pressed",GlobalVars.direction.WEST,west_type)
 		_reset_menu()
 
 func _on_NorthButton_gui_input(event):
 	if event is InputEventScreenTouch and event.is_pressed():
-		emit_signal("direction_pressed",GlobalVars.direction.NORTH,north_type)
+		EventHub.emit_signal("hud_direction_pressed",GlobalVars.direction.NORTH,north_type)
 		_reset_menu()
 
 func _on_EastButton_gui_input(event):
 	if event is InputEventScreenTouch and event.is_pressed():
-		emit_signal("direction_pressed",GlobalVars.direction.EAST,east_type)
+		EventHub.emit_signal("hud_direction_pressed",GlobalVars.direction.EAST,east_type)
 		_reset_menu()

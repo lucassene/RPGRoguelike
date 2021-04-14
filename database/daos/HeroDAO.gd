@@ -1,5 +1,3 @@
-extends Resource
-
 const HERO_TABLE = "hero"
 const HERO_SKILLS_TABLE = "hero_skills"
 

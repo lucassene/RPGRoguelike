@@ -1,10 +1,9 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://game/dungeon_cells/scenes/BaseCell.tscn" type="PackedScene" id=1]
 [ext_resource path="res://resources/tilesdata/prototype_tileset.tres" type="TileSet" id=2]
 [ext_resource path="res://helpers/scenes/Waypoint.tscn" type="PackedScene" id=3]
 [ext_resource path="res://game/dungeon_cells/scripts/BattleCell.gd" type="Script" id=4]
-[ext_resource path="res://interface/scenes/BattleCellHUD.tscn" type="PackedScene" id=5]
 
 [node name="ProtCell_BT00" instance=ExtResource( 1 )]
 tile_set = ExtResource( 2 )
@@ -19,5 +18,3 @@ tile_coord = Vector2( 1, 5 )
 position = Vector2( 960, 1088 )
 tile_coord = Vector2( 7, 8 )
 direction = 2
-
-[node name="CellHUD" parent="CanvasLayer" index="0" instance=ExtResource( 5 )]

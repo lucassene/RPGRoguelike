@@ -1,12 +1,8 @@
-extends Resource
-
 var cells_dao_path = "res://database/daos/CellsDAO.gd"
 var cells_dao
 
-func _ready():
+func _init():
 	randomize()
-
-func initialize():
 	cells_dao = load(cells_dao_path).new()
 
 func get_random_cell(type):

@@ -1,11 +1,17 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://interface/scenes/NavigationMenu.tscn" type="PackedScene" id=1]
 [ext_resource path="res://interface/scrips/DungeonHUD.gd" type="Script" id=2]
+[ext_resource path="res://interface/scenes/SkillMenu.tscn" type="PackedScene" id=3]
+[ext_resource path="res://resources/fonts/roboto-large.tres" type="DynamicFont" id=4]
+[ext_resource path="res://resources/fonts/roboto-regular.tres" type="DynamicFont" id=5]
+[ext_resource path="res://resources/fonts/roboto-huge.tres" type="DynamicFont" id=6]
+[ext_resource path="res://interface/scenes/CancelButton.tscn" type="PackedScene" id=7]
 
 [node name="DungeonHUD" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+mouse_filter = 2
 script = ExtResource( 2 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -14,13 +20,16 @@ __meta__ = {
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
+mouse_filter = 2
+custom_constants/separation = 60
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="TopContainer" type="MarginContainer" parent="VBoxContainer"]
 margin_right = 1080.0
-margin_bottom = 120.0
+margin_bottom = 152.0
+mouse_filter = 2
 custom_constants/margin_right = 60
 custom_constants/margin_top = 60
 custom_constants/margin_left = 60
@@ -29,10 +38,41 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="TopLabelContainer" type="VBoxContainer" parent="VBoxContainer/TopContainer"]
+margin_left = 60.0
+margin_top = 60.0
+margin_right = 1020.0
+margin_bottom = 92.0
+mouse_filter = 2
+
+[node name="CellName" type="Label" parent="VBoxContainer/TopContainer/TopLabelContainer"]
+margin_right = 960.0
+margin_bottom = 32.0
+custom_fonts/font = ExtResource( 5 )
+text = "Cell Name"
+align = 1
+valign = 1
+__meta__ = {
+"_editor_description_": ""
+}
+
+[node name="TurnLabel" type="Label" parent="VBoxContainer/TopContainer/TopLabelContainer"]
+visible = false
+margin_top = 36.0
+margin_right = 960.0
+margin_bottom = 93.0
+custom_fonts/font = ExtResource( 4 )
+text = "Turn Label"
+align = 1
+__meta__ = {
+"_editor_description_": ""
+}
+
 [node name="MiddleContainer" type="MarginContainer" parent="VBoxContainer"]
-margin_top = 124.0
+margin_top = 212.0
 margin_right = 1080.0
-margin_bottom = 1580.0
+margin_bottom = 1524.0
+mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/margin_right = 60
@@ -40,13 +80,34 @@ custom_constants/margin_top = 60
 custom_constants/margin_left = 60
 custom_constants/margin_bottom = 60
 
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/MiddleContainer"]
+margin_left = 60.0
+margin_top = 60.0
+margin_right = 1020.0
+margin_bottom = 1252.0
+mouse_filter = 2
+
+[node name="ReadyLabel" type="Label" parent="VBoxContainer/MiddleContainer/VBoxContainer"]
+visible = false
+margin_right = 960.0
+margin_bottom = 85.0
+custom_fonts/font = ExtResource( 6 )
+custom_colors/font_color = Color( 0.780392, 0.486275, 0.0666667, 1 )
+text = "Get Ready!"
+align = 1
+valign = 1
+__meta__ = {
+"_editor_description_": ""
+}
+
 [node name="BottomContainer" type="MarginContainer" parent="VBoxContainer"]
 margin_top = 1584.0
 margin_right = 1080.0
 margin_bottom = 1920.0
-custom_constants/margin_right = 20
+mouse_filter = 1
+custom_constants/margin_right = 40
 custom_constants/margin_top = 20
-custom_constants/margin_left = 20
+custom_constants/margin_left = 40
 custom_constants/margin_bottom = 60
 __meta__ = {
 "_edit_use_anchors_": false
@@ -56,8 +117,23 @@ __meta__ = {
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 20.0
+margin_left = 40.0
 margin_top = 20.0
-margin_right = 1060.0
+margin_right = 1040.0
 margin_bottom = 276.0
-[connection signal="direction_pressed" from="VBoxContainer/BottomContainer/NavigationMenu" to="." method="_on_NavigationMenu_direction_pressed"]
+
+[node name="SkillMenu" parent="VBoxContainer/BottomContainer" instance=ExtResource( 3 )]
+visible = false
+anchor_right = 0.0
+margin_left = 40.0
+margin_top = 20.0
+margin_right = 1040.0
+margin_bottom = 276.0
+
+[node name="CancelButton" parent="VBoxContainer/BottomContainer" instance=ExtResource( 7 )]
+visible = false
+margin_left = 40.0
+margin_top = 20.0
+margin_right = 1040.0
+margin_bottom = 276.0
+mouse_filter = 1

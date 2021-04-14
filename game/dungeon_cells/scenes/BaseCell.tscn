@@ -19,10 +19,20 @@ direction = 1
 
 [node name="NPCs" type="Node2D" parent="."]
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
-
 [node name="OverlayMap" type="TileMap" parent="."]
+z_index = 1
 tile_set = ExtResource( 3 )
 cell_size = Vector2( 128, 128 )
 cell_custom_transform = Transform2D( 128, 0, 0, 128, 0, 0 )
 format = 1
+
+[node name="FogMap" type="TileMap" parent="."]
+z_index = 1
+tile_set = ExtResource( 3 )
+cell_size = Vector2( 128, 128 )
+cell_custom_transform = Transform2D( 128, 0, 0, 128, 0, 0 )
+format = 1
+
+[node name="CanvasModulate" type="CanvasModulate" parent="."]
+visible = false
+color = Color( 0.239216, 0.239216, 0.239216, 1 )

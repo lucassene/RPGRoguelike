@@ -1,4 +1,4 @@
-var effect_dataset = "res://database/datasets/EffectDataSet.gd"
+var effect_dataset = "res://data/datasets/EffectDataSet.gd"
 var effect_repo
 
 const no_target = [1,4,5,6]
@@ -37,6 +37,11 @@ func _init(_effect_repo,skill):
 
 func _add_effects(skill):
 	var effect
+	if skill.effect1ID == 0:
+		effect = effect_repo.get_end_effect()
+		effect = effect_dataset.new(effect)
+		effects.append(effect)
+		return
 	if skill.effect1ID != null:
 		effect = effect_repo.get_effect_info(skill.effect1ID)
 		effect = effect_dataset.new(effect)

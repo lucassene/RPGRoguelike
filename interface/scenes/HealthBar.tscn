@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://assets/textures/circular-bar.png" type="Texture" id=1]
+[ext_resource path="res://interface/scrips/HealthBar.gd" type="Script" id=2]
+
+[node name="HealthBar" type="TextureProgress"]
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+step = 0.01
+texture_under = ExtResource( 1 )
+texture_progress = ExtResource( 1 )
+fill_mode = 4
+tint_under = Color( 0.215686, 0.211765, 0.219608, 0.678431 )
+tint_progress = Color( 0, 1, 0, 1 )
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Tween" type="Tween" parent="."]

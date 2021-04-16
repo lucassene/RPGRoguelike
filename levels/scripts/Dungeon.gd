@@ -1,9 +1,9 @@
 extends Node2D
 
 onready var hero_scene = preload("res://actors/scenes/Hero.tscn")
-onready var cell_repo = preload("res://database/repositories/CellRepo.gd").new()
-onready var hero_repo = preload("res://database/repositories/HeroRepo.gd").new()
-onready var skill_repo = preload("res://database/repositories/SkillRepo.gd").new()
+onready var cell_repo = preload("res://data/repositories/CellRepo.gd").new()
+onready var hero_repo = preload("res://data/repositories/HeroRepo.gd").new()
+onready var skill_repo = preload("res://data/repositories/SkillRepo.gd").new()
 
 onready var fade_map = $FadeMap
 onready var hud = $CanvasLayer/HUD
@@ -17,7 +17,6 @@ var player_party = []
 var transition_direction
 
 func _ready():
-	DataAccess.load_database()
 	_connect_signals()
 	current_cell = _generate_new_cell()
 	_instance_heroes()
@@ -45,19 +44,15 @@ func _update_hud():
 	hud.set_exits(types)
 
 func _get_next_cell_types():
-	var selected_types = []
+	var exits = current_cell.get_exits()
+	var result = cell_repo.get_next_cells(current_cell.get_type(),exits.size())
 	var next_exits = []
-	for exit in current_cell.get_exits():
-		var exit_done = false
-		while exit_done == false:
-			var dict = {
-				direction = exit,
-				type = cell_repo.get_random_cell_type(current_cell.get_type())
-			}
-			if selected_types.find(dict.type) == -1:
-				selected_types.append(dict.type)
-				next_exits.append(dict)
-				exit_done = true
+	for i in exits.size():
+		var dict = {
+			direction = exits[i],
+			type = result[i]
+		}
+		next_exits.append(dict)
 	return next_exits
 
 func _instance_heroes():

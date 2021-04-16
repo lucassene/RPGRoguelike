@@ -1,4 +1,4 @@
-var hero_dao = "res://database/daos/HeroDAO.gd"
+var hero_dao = "res://data/daos/HeroDAO.gd"
 
 func _init():
 	hero_dao = load(hero_dao).new()

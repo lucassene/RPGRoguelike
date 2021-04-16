@@ -1,4 +1,4 @@
-var enemy_dao_path = "res://database/daos/EnemyDAO.gd"
+var enemy_dao_path = "res://data/daos/EnemyDAO.gd"
 var enemy_dao
 
 func _init():

@@ -24,12 +24,12 @@ func _ready():
 
 func initialize(data):
 	cell_repo = data
+	navigation_menu.initialize(cell_repo)
 
 func update_hud(_cell_type):
 	cell_type = _cell_type
 	cell_label.text = cell_repo.get_cell_type_desc(cell_type)
 	_set_hud_mode()
-	EventHub.emit_signal("hud_ready")
 
 func _set_hud_mode():
 	mode = cell_repo.get_cell_group(cell_type)
@@ -46,15 +46,18 @@ func _begin_battle_mode():
 	ready_label.show()
 	yield(get_tree().create_timer(2.0),"timeout")
 	ready_label.hide()
+	EventHub.emit_signal("start_battle")
 
 func _begin_shop_mode():
-	navigation_menu.initialize(cell_repo)
+	navigation_menu.show()
+	EventHub.emit_signal("start_shop")
 
 func _begin_rest_mode():
-	navigation_menu.initialize(cell_repo)
+	navigation_menu.show()
+	EventHub.emit_signal("start_rest")
 
 func _begin_exploration_mode():
-	navigation_menu.initialize(cell_repo)
+	navigation_menu.show()
 
 func set_exits(exits):
 	navigation_menu.update_menu(exits)

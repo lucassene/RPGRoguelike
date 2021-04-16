@@ -5,6 +5,7 @@ onready var tween: Tween = $Tween
 onready var turn_mark: Sprite = $TurnMark
 onready var hover_light: Light2D = $HoverLight
 onready var damage_label: Label = $DmgLabel
+onready var health_bar: TextureProgress = $HealthBar
 
 signal destination_reached
 signal movement_started
@@ -44,6 +45,7 @@ func initialize(_actor_repo,_skill_repo,_effect_repo,_actor,cell):
 	effect_repo = _effect_repo
 	skill_repo = _skill_repo
 	parent_cell = cell
+	health_bar.initialize(actor_dataset.get_max_health())
 
 func move_to(tile,target):
 	parent_cell.remove_from_taken(current_tile)
@@ -73,6 +75,7 @@ func apply_damage(value):
 	var damage = actor_dataset.apply_damage(value)
 	print(actor_dataset.get_name()," suffered ",damage," damage.")
 	_show_damage_indicator(damage)
+	health_bar.update_bar(damage)
 	if actor_dataset.is_dead(): emit_signal("actor_killed",self)
 
 func modify_defense(value):

@@ -16,7 +16,7 @@ func _ready():
 	in_battle = true
 	current_turn = 0
 	current_fighter = 0
-	EventHub.connect("hud_ready",self,"_on_hud_ready")
+	EventHub.connect("start_battle",self,"_on_hud_ready")
 	EventHub.connect("skill_selected",self,"_on_skill_selected")
 	EventHub.connect("skill_canceled",self,"_on_skill_canceled")
 	EventHub.connect("skill_executed",self,"_on_skill_executed")
@@ -30,8 +30,9 @@ func _unhandled_input(event):
 		_end_battle()
 		return
 	if event is InputEventScreenTouch and event.is_pressed():
-		var tile_touched = world_to_map(event.position)
-		if cell_mode == NORMAL:
+		var global_touch_position = get_canvas_transform().xform_inv(event.position)
+		var tile_touched = world_to_map(global_touch_position)
+		if cell_mode == NORMAL and _is_hero_turn():
 			if highlighted_tiles.find(tile_touched) != -1:
 				_tile_action(tile_touched)
 		elif cell_mode == SPACE_SELECTION:
@@ -74,6 +75,11 @@ func next_turn():
 			current_fighter = 0
 		turn_order[current_fighter].begin_turn()
 		EventHub.emit_signal("turn_changed",turn_order[current_fighter].get_actor_name(),_is_enemy())
+		
+		#Development
+		if enemy_party.find(turn_order[current_fighter]) != -1:
+			yield(get_tree().create_timer(1.0),"timeout")
+			next_turn()
 	else:
 		_end_battle()
 
@@ -115,6 +121,7 @@ func calculate_movement(_tile,hero):
 			for n in _get_neighbors(t.tile):
 				var nt ={tile = n,value = t.value + 1}
 				if _can_move(n):
+					overlay_map.set_cell(n.x,n.y,TILE_OK)
 					movement.append(nt.tile)
 					if nt.value < hero.get_speed():
 						to_check.append(nt)
@@ -132,7 +139,6 @@ func _get_neighbors(tile):
 
 func _can_move(tile):
 	if not _is_tile_blocked(get_cellv(tile)) and not _is_tile_taken(tile):
-		overlay_map.set_cell(tile.x,tile.y,TILE_OK)
 		return true
 	return false
 
@@ -167,6 +173,19 @@ func _is_in_melee_range(origin_tile,target_tile):
 		return true
 	return false
 
+func _highlight_viable_targets(origin_tile,party,skill_range):
+	for actor in party:
+		var target_tile = actor.get_current_tile()
+		if skill_range != GlobalVars.skill_range.MELEE or (skill_range == GlobalVars.skill_range.MELEE and _is_in_melee_range(origin_tile,target_tile)):
+			actor.toggle_light(true)
+			viable_target.append(actor)
+		canvas_modulate.visible = true
+
+func _is_hero_turn():
+	if player_party.find(turn_order[current_fighter]) != -1:
+		return true
+	return false
+
 func _on_actor_movement_started():
 	can_act = false
 
@@ -191,7 +210,6 @@ func _on_hud_ready():
 func _on_skill_selected(skill):
 	active_skill = skill
 	var origin_tile = turn_order[current_fighter].get_current_tile()
-	var target_tile
 	var skill_range = skill.get_range()
 	match skill.get_target():
 		GlobalVars.skill_target.SELF:
@@ -199,32 +217,20 @@ func _on_skill_selected(skill):
 		GlobalVars.skill_target.ENEMY:
 			cell_mode = NPC_SELECTION
 			turn_order[current_fighter].toggle_light(true)
-			for enemy in enemy_party:
-				target_tile = enemy.get_current_tile()
-				if skill_range != GlobalVars.skill_range.MELEE or (skill_range == GlobalVars.skill_range.MELEE and _is_in_melee_range(origin_tile,target_tile)):
-					enemy.toggle_light(true)
-					viable_target.append(enemy)
-				canvas_modulate.visible = true
+			_highlight_viable_targets(origin_tile,enemy_party,skill_range)
 		GlobalVars.skill_target.ENEMIES_ALL:
-			var targets = enemy_party
-			_execute_effects(skill.get_effects(),targets)
+			_execute_effects(skill.get_effects(),enemy_party)
 		GlobalVars.skill_target.ALLY:
 			cell_mode = NPC_SELECTION
 			turn_order[current_fighter].toggle_light(true)
-			for hero in player_party:
-				target_tile = hero.get_current_tile()
-				if skill_range != GlobalVars.skill_range.MELEE or (skill_range == GlobalVars.skill_range.MELEE and _is_in_melee_range(origin_tile,target_tile)):
-					hero.toggle_light(true)
-					viable_target.append(hero)
-				canvas_modulate.visible = true
+			_highlight_viable_targets(origin_tile,player_party,skill_range)
 		GlobalVars.skill_target.ALLIES_ALL:
-			var targets = player_party
-			_execute_effects(skill.get_effects(),targets)
+			_execute_effects(skill.get_effects(),player_party)
 		GlobalVars.skill_target.SPACE:
 			cell_mode = SPACE_SELECTION
 			tile_left = turn_order[current_fighter].get_current_tile()
 			for actor in turn_order:
-				target_tile = actor.get_current_tile()
+				var target_tile = actor.get_current_tile()
 				fog_map.set_cellv(target_tile,2)
 
 func _on_skill_canceled():
@@ -241,7 +247,8 @@ func _on_actor_selected(actor):
 		_execute_effects(active_skill.get_effects(),targets)
 
 func _on_tile_selected(tile):
-	if cell_mode == SPACE_SELECTION and tile_taken.find(tile) == -1:
+	if cell_mode == SPACE_SELECTION and tile_taken.find(tile) == -1 and not _is_tile_blocked(get_cellv(tile)):
+		tile_taken.append(tile)
 		fog_map.set_cellv(tile_left,-1)
 		var targets = [tile]
 		_execute_effects(active_skill.get_effects(),targets)

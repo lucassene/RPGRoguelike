@@ -1,6 +1,6 @@
 var id: int
 var name: String setget ,get_name
-var max_health: int
+var max_health: int setget ,get_max_health
 var current_health: int
 var base_speed: int
 var speed: int
@@ -19,6 +19,9 @@ func _init(enemy):
 
 func get_name():
 	return name
+
+func get_max_health():
+	return max_health
 
 func apply_damage(value):
 	if value <= 0:

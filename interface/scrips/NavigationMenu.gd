@@ -13,7 +13,6 @@ var west_type
 var east_type
 
 func initialize(data):
-	show()
 	cell_data = data
 
 func update_menu(exits):

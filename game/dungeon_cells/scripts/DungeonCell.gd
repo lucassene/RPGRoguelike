@@ -1,8 +1,8 @@
 extends TileMap
 class_name DungeonCell
 
-onready var enemy_repo = preload("res://database/repositories/EnemyRepo.gd").new()
-onready var effect_repo = preload("res://database/repositories/EffectRepo.gd").new()
+onready var enemy_repo = preload("res://data/repositories/EnemyRepo.gd").new()
+onready var effect_repo = preload("res://data/repositories/EffectRepo.gd").new()
 onready var enemy_scene = preload("res://actors/scenes/Enemy.tscn")
 onready var npc_scene = preload("res://actors/scenes/NPC.tscn")
 
@@ -110,8 +110,8 @@ func _populate_cell():
 		GlobalVars.actor_type.NPC:
 			_instance_npc()
 		GlobalVars.actor_type.ENEMY_NPC:
-			_instance_enemies()
 			_instance_npc()
+			_instance_enemies()
 
 func _instance_enemies():
 	var enemy_count = _get_enemy_count()

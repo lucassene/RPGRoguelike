@@ -1,4 +1,4 @@
-var cells_dao_path = "res://database/daos/CellsDAO.gd"
+var cells_dao_path = "res://data/daos/CellsDAO.gd"
 var cells_dao
 
 func _init():
@@ -11,13 +11,22 @@ func get_random_cell(type):
 	random = randi() % results.size()
 	return results[random].path
 
-func get_random_cell_type(current_type):
+func get_next_cells(current_type,times):
+	var count = times
+	var selected_types = []
 	var possible_types = cells_dao.get_possible_cell_types(current_type)
-	var random = randi() % 100
-	for x in range(possible_types.size(),0,-1):
-		var index = x -1
-		if random >= possible_types[index].chance:
-			return possible_types[index].nextTypeID
+	while count > 0:
+		var random = randi() % 100
+		for x in range(possible_types.size(),0,-1):
+			var index = x -1
+			var type = possible_types[index]
+			if random >= type.chance:
+				if selected_types.find(type.nextTypeID) == -1:
+					selected_types.append(type.nextTypeID)
+					count -= 1
+					if selected_types.size() == times:
+						break
+	return selected_types
 
 func get_first_cell_type():
 	var random

@@ -1,9 +1,9 @@
-var skill_dataset = "res://database/datasets/SkillDataSet.gd"
+var skill_dataset = "res://data/datasets/SkillDataSet.gd"
 var effect_repo
 
 var id: int setget ,get_id
 var name: String setget ,get_name
-var max_health: int
+var max_health: int setget ,get_max_health
 var current_health: int
 var base_speed: int
 var current_speed: int setget ,get_speed
@@ -38,6 +38,9 @@ func get_id():
 func get_name():
 	return name
 
+func get_max_health():
+	return max_health
+
 func get_speed():
 	return current_speed
 
@@ -46,6 +49,7 @@ func set_skills(_skills):
 	for skill in _skills:
 		new_skill = skill_dataset.new(effect_repo,skill)
 		skills.append(new_skill)
+	_add_end_turn_skill()
 
 func get_skills():
 	return skills
@@ -80,3 +84,14 @@ func is_dead():
 		return true
 	return false
 
+func _add_end_turn_skill():
+	var end_skill = {
+		ID = 0,
+		name = "End Turn",
+		rangeID = GlobalVars.skill_range.SELF,
+		targetID = GlobalVars.skill_target.SELF,
+		effect1ID = 0,
+		effect2ID = null,
+		effect3ID = null
+	}
+	add_skill(end_skill)

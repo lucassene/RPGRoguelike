@@ -32,7 +32,7 @@ func _unhandled_input(event):
 	if event is InputEventScreenTouch and event.is_pressed():
 		var global_touch_position = get_canvas_transform().xform_inv(event.position)
 		var tile_touched = world_to_map(global_touch_position)
-		if cell_mode == NORMAL and _is_hero_turn():
+		if in_battle and cell_mode == NORMAL and _is_hero_turn():
 			if highlighted_tiles.find(tile_touched) != -1:
 				_tile_action(tile_touched)
 		elif cell_mode == SPACE_SELECTION:
@@ -182,7 +182,7 @@ func _highlight_viable_targets(origin_tile,party,skill_range):
 		canvas_modulate.visible = true
 
 func _is_hero_turn():
-	if player_party.find(turn_order[current_fighter]) != -1:
+	if turn_order.size() > 0 and player_party.find(turn_order[current_fighter]) != -1:
 		return true
 	return false
 

@@ -71,7 +71,7 @@ __meta__ = {
 [node name="MiddleContainer" type="MarginContainer" parent="VBoxContainer"]
 margin_top = 212.0
 margin_right = 1080.0
-margin_bottom = 1524.0
+margin_bottom = 1554.0
 mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -84,7 +84,7 @@ custom_constants/margin_bottom = 60
 margin_left = 60.0
 margin_top = 60.0
 margin_right = 1020.0
-margin_bottom = 1252.0
+margin_bottom = 1282.0
 mouse_filter = 2
 
 [node name="ReadyLabel" type="Label" parent="VBoxContainer/MiddleContainer/VBoxContainer"]
@@ -101,14 +101,14 @@ __meta__ = {
 }
 
 [node name="BottomContainer" type="MarginContainer" parent="VBoxContainer"]
-margin_top = 1584.0
+margin_top = 1614.0
 margin_right = 1080.0
 margin_bottom = 1920.0
 mouse_filter = 1
 custom_constants/margin_right = 40
 custom_constants/margin_top = 20
 custom_constants/margin_left = 40
-custom_constants/margin_bottom = 60
+custom_constants/margin_bottom = 30
 __meta__ = {
 "_edit_use_anchors_": false
 }

@@ -3,7 +3,6 @@ extends Node
 const SQLite = preload("res://addons/godot-sqlite/bin/gdsqlite.gdns")
 
 var database
-var last_query = ""
 
 func _ready():
 	_load_database()
@@ -11,13 +10,15 @@ func _ready():
 
 func query(string):
 	print(string)
-	last_query = string
 	database.query(string)
 	var result = database.query_result
 	return result.duplicate()
 
 func insert(table,data):
-	database.insert_row(table,data)
+	var was_inserted = database.insert_row(table,data)
+	if was_inserted:
+		return database.last_insert_rowid
+	return null
 
 func _load_database():
 	database = SQLite.new()

@@ -10,3 +10,6 @@ func get_heroes_in_party():
 func get_hero_skills(hero_id):
 	var skills = hero_dao.get_hero_skills(hero_id)
 	return skills
+
+func insert_new_hero(hero):
+	return hero_dao.insert_new_hero(hero)

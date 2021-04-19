@@ -8,7 +8,7 @@
 script = ExtResource( 5 )
 
 [node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2( 576, 960 )
+position = Vector2( 540, 960 )
 current = true
 
 [node name="CellContainer" type="Node2D" parent="."]

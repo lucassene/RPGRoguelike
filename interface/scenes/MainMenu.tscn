@@ -57,10 +57,10 @@ custom_constants/separation = 60
 alignment = 1
 
 [node name="BeginButton" type="Button" parent="MarginContainer/VBoxContainer2/VBoxContainer"]
-margin_left = 219.0
-margin_top = 288.0
-margin_right = 619.0
-margin_bottom = 388.0
+margin_left = 220.0
+margin_top = 289.0
+margin_right = 620.0
+margin_bottom = 389.0
 rect_min_size = Vector2( 400, 100 )
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -68,10 +68,10 @@ custom_fonts/font = ExtResource( 1 )
 text = "New Game"
 
 [node name="ExitButton" type="Button" parent="MarginContainer/VBoxContainer2/VBoxContainer"]
-margin_left = 219.0
-margin_top = 448.0
-margin_right = 619.0
-margin_bottom = 548.0
+margin_left = 220.0
+margin_top = 449.0
+margin_right = 620.0
+margin_bottom = 549.0
 rect_min_size = Vector2( 400, 100 )
 size_flags_horizontal = 4
 size_flags_vertical = 4

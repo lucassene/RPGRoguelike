@@ -1,3 +1,5 @@
+extends Resource
+
 const EQUIP_TABLE = "equip"
 const HERO_EQUIP_TABLE = "hero_equip"
 

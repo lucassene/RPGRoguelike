@@ -38,6 +38,7 @@ visible = false
 position = Vector2( 90, 90 )
 
 [node name="Area2D" type="Area2D" parent="."]
+monitoring = false
 monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
@@ -45,6 +46,7 @@ position = Vector2( 90, 90 )
 shape = SubResource( 2 )
 
 [node name="HealthBar" parent="." instance=ExtResource( 6 )]
+visible = false
 margin_right = 180.0
 margin_bottom = 180.0
 
@@ -52,6 +54,7 @@ margin_bottom = 180.0
 margin_top = 135.0
 margin_right = 180.0
 margin_bottom = 167.0
+mouse_filter = 2
 color = Color( 0.109804, 0.0980392, 0.0980392, 1 )
 __meta__ = {
 "_edit_use_anchors_": false,

@@ -1,3 +1,5 @@
+extends Resource
+
 const EFFECT_TABLE = "effect"
 
 func get_effect_info(effect_id):

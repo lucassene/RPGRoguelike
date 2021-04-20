@@ -1,3 +1,5 @@
+extends Resource
+
 var enemy_dao_path = "res://data/daos/EnemyDAO.gd"
 var enemy_dao
 

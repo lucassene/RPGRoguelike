@@ -1,3 +1,5 @@
+extends Resource
+
 var effect_dataset = "res://data/datasets/EffectDataSet.gd"
 var effect_repo
 

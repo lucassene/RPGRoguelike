@@ -1,3 +1,5 @@
+extends Resource
+
 const CELL_TABLE = "cell"
 const CELL_GROUP_TABLE = "cell_group"
 const CELL_TYPE_TABLE = "cell_type"

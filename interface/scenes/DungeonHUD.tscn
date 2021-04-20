@@ -11,7 +11,7 @@
 [node name="DungeonHUD" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-mouse_filter = 2
+mouse_filter = 1
 script = ExtResource( 2 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -20,7 +20,6 @@ __meta__ = {
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
-mouse_filter = 2
 custom_constants/separation = 60
 __meta__ = {
 "_edit_use_anchors_": false
@@ -29,7 +28,7 @@ __meta__ = {
 [node name="TopContainer" type="MarginContainer" parent="VBoxContainer"]
 margin_right = 1080.0
 margin_bottom = 152.0
-mouse_filter = 2
+mouse_filter = 1
 custom_constants/margin_right = 60
 custom_constants/margin_top = 60
 custom_constants/margin_left = 60
@@ -68,11 +67,18 @@ __meta__ = {
 "_editor_description_": ""
 }
 
+[node name="CancelButton" parent="VBoxContainer/TopContainer" instance=ExtResource( 7 )]
+visible = false
+margin_left = 60.0
+margin_top = 60.0
+margin_right = 1020.0
+margin_bottom = 286.0
+
 [node name="MiddleContainer" type="MarginContainer" parent="VBoxContainer"]
 margin_top = 212.0
 margin_right = 1080.0
 margin_bottom = 1554.0
-mouse_filter = 2
+mouse_filter = 1
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/margin_right = 60
@@ -85,7 +91,6 @@ margin_left = 60.0
 margin_top = 60.0
 margin_right = 1020.0
 margin_bottom = 1282.0
-mouse_filter = 2
 
 [node name="ReadyLabel" type="Label" parent="VBoxContainer/MiddleContainer/VBoxContainer"]
 visible = false
@@ -125,15 +130,8 @@ margin_bottom = 276.0
 [node name="SkillMenu" parent="VBoxContainer/BottomContainer" instance=ExtResource( 3 )]
 visible = false
 anchor_right = 0.0
+anchor_bottom = 0.0
 margin_left = 40.0
 margin_top = 20.0
 margin_right = 1040.0
 margin_bottom = 276.0
-
-[node name="CancelButton" parent="VBoxContainer/BottomContainer" instance=ExtResource( 7 )]
-visible = false
-margin_left = 40.0
-margin_top = 20.0
-margin_right = 1040.0
-margin_bottom = 276.0
-mouse_filter = 1

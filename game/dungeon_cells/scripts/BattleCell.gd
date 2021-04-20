@@ -8,8 +8,9 @@ var turn_order = []
 var can_act = true
 var highlighted_tiles = []
 var active_skill
-var viable_target = []
+var viable_targets = []
 var tile_left = Vector2.ZERO
+var has_moved = false
 
 func _ready():
 	can_act = true
@@ -21,8 +22,9 @@ func _ready():
 	EventHub.connect("skill_canceled",self,"_on_skill_canceled")
 	EventHub.connect("skill_executed",self,"_on_skill_executed")
 	EventHub.connect("actor_selected",self,"_on_actor_selected")
-
-func _unhandled_input(event):
+	EventHub.connect("skill_dropped",self,"_on_skill_dropped")
+	
+func _input(event):
 	if can_act and event.is_action_pressed("next_turn") and current_turn > 0:
 		next_turn()
 		return
@@ -32,7 +34,7 @@ func _unhandled_input(event):
 	if event is InputEventScreenTouch and event.is_pressed():
 		var global_touch_position = get_canvas_transform().xform_inv(event.position)
 		var tile_touched = world_to_map(global_touch_position)
-		if in_battle and cell_mode == NORMAL and _is_hero_turn():
+		if in_battle and cell_mode == NORMAL and _is_hero_turn() and not has_moved:
 			if highlighted_tiles.find(tile_touched) != -1:
 				_tile_action(tile_touched)
 		elif cell_mode == SPACE_SELECTION:
@@ -51,12 +53,14 @@ func _connect_signals():
 		actor.connect("destination_reached",self,"_on_actor_reached_destination")
 		actor.connect("movement_started",self,"_on_actor_movement_started")
 		actor.connect("actor_killed",self,"_on_actor_killed")
+		actor.set_health_bar_visibility(true)
 
 func _disconnect_signals():
 	for actor in turn_order:
 		actor.disconnect("destination_reached",self,"_on_actor_reached_destination")
 		actor.disconnect("movement_started",self,"_on_actor_movement_started")
 		actor.disconnect("actor_killed",self,"_on_actor_killed")
+		actor.set_health_bar_visibility(false)
 
 func _prepare_for_next_turn():
 	cell_mode = NORMAL
@@ -67,6 +71,7 @@ func _prepare_for_next_turn():
 func next_turn():
 	_prepare_for_next_turn()
 	_change_turn()
+	has_moved = false
 	if turn_order.size() > 0:
 		turn_order[current_fighter].end_turn()
 		current_turn += 1
@@ -99,6 +104,7 @@ func _tile_action(tile):
 	_clear_highlighted_tiles()
 	match _get_tile_content(tile):
 		EMPTY:
+			has_moved = true
 			turn_order[current_fighter].move_to(tile,map_to_world(tile))
 			tile_taken.append(tile)
 
@@ -174,11 +180,12 @@ func _is_in_melee_range(origin_tile,target_tile):
 	return false
 
 func _highlight_viable_targets(origin_tile,party,skill_range):
+	viable_targets.clear()
 	for actor in party:
 		var target_tile = actor.get_current_tile()
-		if skill_range != GlobalVars.skill_range.MELEE or (skill_range == GlobalVars.skill_range.MELEE and _is_in_melee_range(origin_tile,target_tile)):
+		if actor and skill_range != GlobalVars.skill_range.MELEE or (skill_range == GlobalVars.skill_range.MELEE and _is_in_melee_range(origin_tile,target_tile)):
 			actor.toggle_light(true)
-			viable_target.append(actor)
+			viable_targets.append(actor)
 		canvas_modulate.visible = true
 
 func _is_hero_turn():
@@ -240,9 +247,22 @@ func _on_skill_executed():
 	cell_mode = NORMAL
 	next_turn()
 
+func _on_skill_dropped(drop_position):
+	var tile = world_to_map(drop_position)
+	var has_target = false
+	if tile:
+		for target in viable_targets:
+			if tile == target.get_current_tile():
+				has_target = true
+				var targets = [target]
+				_execute_effects(active_skill.get_effects(),targets)
+				break
+	if not has_target:
+		_prepare_for_next_turn()
+
 func _on_actor_selected(actor):
-	if cell_mode == NPC_SELECTION and viable_target.find(actor) != -1:
-		viable_target.clear()
+	if cell_mode == NPC_SELECTION and viable_targets.find(actor) != -1:
+		viable_targets.clear()
 		var targets = [actor]
 		_execute_effects(active_skill.get_effects(),targets)
 

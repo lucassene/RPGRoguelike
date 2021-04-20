@@ -1,3 +1,5 @@
+extends Resource
+
 var effect_dao = "res://data/daos/EffectDAO.gd"
 
 func _init():

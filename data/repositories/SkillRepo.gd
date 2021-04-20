@@ -1,3 +1,5 @@
+extends Resource
+
 enum {END_TURN_EFFECT = 6}
 enum {MAGIC_SKILL = 3}
 

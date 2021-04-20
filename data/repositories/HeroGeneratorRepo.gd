@@ -1,3 +1,5 @@
+extends Resource
+
 var equip_repo = "res://data/repositories/EquipRepo.gd"
 var hero_gen_dao = "res://data/daos/HeroGeneratorDAO.gd"
 

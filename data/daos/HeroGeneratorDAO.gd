@@ -1,3 +1,5 @@
+extends Resource
+
 const HERO_NAME_TABLE = "hero_name"
 const HERO_TOKEN_TABLE = "hero_token"
 

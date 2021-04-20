@@ -5,7 +5,7 @@ onready var skill_menu = $VBoxContainer/BottomContainer/SkillMenu
 onready var cell_label = $VBoxContainer/TopContainer/TopLabelContainer/CellName
 onready var turn_label = $VBoxContainer/TopContainer/TopLabelContainer/TurnLabel
 onready var ready_label = $VBoxContainer/MiddleContainer/VBoxContainer/ReadyLabel
-onready var cancel_button = $VBoxContainer/BottomContainer/CancelButton
+onready var cancel_button = $VBoxContainer/TopContainer/CancelButton
 
 enum {EXPLORATION,BATTLE,SHOP,REST}
 
@@ -20,7 +20,9 @@ func _ready():
 	EventHub.connect("battle_ended",self,"_on_battle_ended")
 	EventHub.connect("skill_selected",self,"_on_skill_selected")
 	EventHub.connect("skill_canceled",self,"_on_skill_canceled")
-	EventHub.connect("skill_executed",self,"_on_skill_executed")
+
+func _input(event):
+	get_viewport().unhandled_input(event)
 
 func initialize(data):
 	cell_repo = data
@@ -30,6 +32,15 @@ func update_hud(_cell_type):
 	cell_type = _cell_type
 	cell_label.text = cell_repo.get_cell_type_desc(cell_type)
 	_set_hud_mode()
+
+func can_drop_data(_position, _data):
+	return true if mode == BATTLE else false
+
+func drop_data(position, _data):
+	cancel_button.hide()
+	var global_touch_position = get_canvas_transform().xform_inv(position)
+	print(global_touch_position)
+	EventHub.emit_signal("skill_dropped",global_touch_position)
 
 func _set_hud_mode():
 	mode = cell_repo.get_cell_group(cell_type)
@@ -63,6 +74,7 @@ func set_exits(exits):
 	navigation_menu.update_menu(exits)
 
 func _on_battle_turn_changed(actor_name,is_enemy):
+	cancel_button.hide()
 	turn_label.show()
 	turn_label.text = TURN_TEMPLATE % actor_name
 	if is_enemy:
@@ -75,12 +87,7 @@ func _on_battle_ended():
 	_begin_exploration_mode()
 
 func _on_skill_selected(_skill):
-	skill_menu.hide()
 	cancel_button.show()
 
 func _on_skill_canceled():
-	cancel_button.hide()
-	skill_menu.show()
-
-func _on_skill_executed():
 	cancel_button.hide()

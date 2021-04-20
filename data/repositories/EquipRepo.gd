@@ -1,3 +1,5 @@
+extends Resource
+
 var equip_dao = "res://data/daos/EquipDAO.gd"
 
 enum equip_type {WEAPON = 1, ARMOR = 2, ACCESSORY = 3}

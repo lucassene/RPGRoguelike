@@ -39,25 +39,37 @@ custom_constants/separation = 60
 alignment = 1
 
 [node name="Explore" type="Button" parent="MarginContainer/VBoxContainer"]
-margin_left = 270.0
-margin_top = 689.0
-margin_right = 570.0
-margin_bottom = 809.0
-rect_min_size = Vector2( 300, 120 )
+margin_left = 219.0
+margin_top = 600.0
+margin_right = 619.0
+margin_bottom = 720.0
+rect_min_size = Vector2( 400, 120 )
 size_flags_horizontal = 4
 size_flags_vertical = 4
 custom_fonts/font = ExtResource( 1 )
 text = "Explore"
 
+[node name="ManageParty" type="Button" parent="MarginContainer/VBoxContainer"]
+margin_left = 219.0
+margin_top = 780.0
+margin_right = 619.0
+margin_bottom = 900.0
+rect_min_size = Vector2( 400, 120 )
+size_flags_horizontal = 4
+size_flags_vertical = 4
+custom_fonts/font = ExtResource( 1 )
+text = "Manage Party"
+
 [node name="Quit" type="Button" parent="MarginContainer/VBoxContainer"]
-margin_left = 270.0
-margin_top = 869.0
-margin_right = 570.0
-margin_bottom = 989.0
-rect_min_size = Vector2( 300, 120 )
+margin_left = 219.0
+margin_top = 960.0
+margin_right = 619.0
+margin_bottom = 1080.0
+rect_min_size = Vector2( 400, 120 )
 size_flags_horizontal = 4
 size_flags_vertical = 4
 custom_fonts/font = ExtResource( 1 )
 text = "Quit"
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Explore" to="." method="_on_Explore_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/ManageParty" to="." method="_on_ManageParty_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Quit" to="." method="_on_Quit_pressed"]

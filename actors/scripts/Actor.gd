@@ -111,6 +111,9 @@ func _has_arrived():
 		return true
 	return false
 
+func set_health_bar_visibility(value):
+	health_bar.visible = value
+
 func _on_Area2D_input_event(_viewport, event, _shape_idx):
 	if event is InputEventScreenTouch and event.is_pressed():
 		EventHub.emit_signal("actor_selected",self)

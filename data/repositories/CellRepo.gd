@@ -1,3 +1,5 @@
+extends Resource
+
 var cells_dao_path = "res://data/daos/CellsDAO.gd"
 var cells_dao
 

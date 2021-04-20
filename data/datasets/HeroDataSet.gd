@@ -1,4 +1,7 @@
+extends Resource
+
 var skill_dataset = "res://data/datasets/SkillDataSet.gd"
+var equip_dataset = "res://data/datasets/EquipDataSet.gd"
 var effect_repo
 
 var id: int setget ,get_id
@@ -8,16 +11,16 @@ var current_health: int
 var base_speed: int
 var current_speed: int setget ,get_speed
 var base_attack: int
-var attack: int
 var base_magic: int 
-var magic: int
 var base_defense: int 
-var defense: int
+var stats = {}
 var skills = [] setget set_skills,get_skills
+var equips = []
 
 func _init(hero,_effect_repo):
 	effect_repo = _effect_repo
 	skill_dataset = load(skill_dataset)
+	equip_dataset = load(equip_dataset)
 	id = hero.ID
 	name = hero.name
 	max_health = hero.maxHealth
@@ -25,12 +28,15 @@ func _init(hero,_effect_repo):
 	base_speed = hero.baseSpeed
 	current_speed = hero.baseSpeed
 	base_attack = hero.baseAttack
-	attack = hero.baseAttack
 	base_magic = hero.baseMagic
-	magic = hero.baseMagic
 	base_defense = hero.baseDefense
-	defense = hero.baseDefense
+	stats = {
+		attack = hero.baseAttack,
+		magic = hero.baseMagic,
+		defense = hero.baseDefense
+	}
 	skills = []
+	equips = []
 
 func get_id():
 	return id
@@ -64,20 +70,27 @@ func add_skill(skill):
 	skills.append(new_skill)
 
 func get_stat(stat):
-	return get(stat)
+	return stats[stat]
+
+func set_equipment(equipment):
+	var new_equip
+	for equip in equipment:
+		new_equip = equip_dataset.new(equip)
+		stats[new_equip.base_stat] += new_equip.base_value
+		equips.append(new_equip)
 
 func apply_damage(value):
 	if value <= 0:
 		current_health -= int(clamp(value,0,max_health))
 		return value
 	else:
-		var damage = int(max(0,value - defense))
+		var damage = int(max(0,value - stats.defense))
 		current_health -= int(clamp(damage,0,max_health))
 		return damage
 
 func modify_defense(value):
-	defense += int(ceil(value))
-	return defense
+	stats.defense += int(ceil(value))
+	return stats.defense
 
 func is_dead():
 	if current_health <= 0:

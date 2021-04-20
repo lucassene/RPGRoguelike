@@ -9,6 +9,7 @@ func initialize(actor_repo,skill_repo,effect_repo,actor,cell):
 	name_label.text = actor_dataset.get_name()
 	.initialize(actor_repo,skill_repo,effect_repo,actor,cell)
 	_add_skills()
+	_add_equipment()
 
 func fade_out():
 	tween.interpolate_property(self,"modulate:a",1.0,0.0,0.5,Tween.TRANS_LINEAR,Tween.EASE_OUT)
@@ -28,3 +29,6 @@ func _add_skills():
 	var skills = actor_repo.get_hero_skills(actor_dataset.get_id())
 	actor_dataset.set_skills(skills)
 
+func _add_equipment():
+	var equipment = actor_repo.get_hero_equipment(actor_dataset.get_id())
+	actor_dataset.set_equipment(equipment)

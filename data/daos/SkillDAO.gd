@@ -1,3 +1,5 @@
+extends Resource
+
 const SKILL_TABLE = "skill"
 const HERO_SKILL_TABLE = "hero_skill"
 const RANGE_TABLE = "range"

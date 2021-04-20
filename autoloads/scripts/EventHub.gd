@@ -14,4 +14,5 @@ signal skill_canceled
 signal skill_selected(skill)
 signal skill_executed()
 signal actor_selected(actor)
+signal skill_dropped(position)
 

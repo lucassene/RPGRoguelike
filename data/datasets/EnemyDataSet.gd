@@ -1,3 +1,5 @@
+extends Resource
+
 var id: int
 var name: String setget ,get_name
 var max_health: int setget ,get_max_health

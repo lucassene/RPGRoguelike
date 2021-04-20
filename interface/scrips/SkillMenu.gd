@@ -1,7 +1,6 @@
 extends ScrollContainer
 
 onready var skill_scene = preload("res://interface/scenes/SkillButton.tscn")
-
 onready var button_container = $ButtonContainer
 
 func _ready():

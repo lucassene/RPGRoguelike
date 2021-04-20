@@ -1,7 +1,7 @@
 extends Node
 
 func _get_magnitude(effect,caster):
-	var value =_get_stat_value(effect,caster)
+	var value = _get_stat_value(effect,caster)
 	var magnitude
 	if value != null:
 		magnitude = effect.get_base_value() + (value * effect.get_base_modifier())

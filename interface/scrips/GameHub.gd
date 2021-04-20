@@ -7,3 +7,6 @@ func _on_Explore_pressed():
 
 func _on_Quit_pressed():
 	get_tree().quit()
+
+func _on_ManageParty_pressed():
+	pass # Replace with function body.

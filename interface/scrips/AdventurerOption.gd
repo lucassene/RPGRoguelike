@@ -1,13 +1,13 @@
 extends Control
 
-onready var token: TextureRect = $Container/TokenTexture
-onready var name_label: Label = $Container/VBoxContainer/NameLabel
-onready var health_label: Label = $Container/VBoxContainer/StatsContainer/HealthContainer/HealthLabel
-onready var attack_label: Label = $Container/VBoxContainer/StatsContainer/AttackContainer/AttackLabel
-onready var magic_label: Label = $Container/VBoxContainer/StatsContainer/MagicContainer/MagicLabel
-onready var speed_label: Label = $Container/VBoxContainer/StatsContainer/SpeedContainer/SpeedLabel
-onready var defense_label: Label = $Container/VBoxContainer/StatsContainer/DefenseContainer/DefenseLabel
-onready var equip_label: Label = $Container/VBoxContainer/EquipContainer/EquipLabel
+onready var token: TextureRect = $MarginContainer/VBoxContainer/Container/TokenTexture
+onready var name_label: Label = $MarginContainer/VBoxContainer/Container/VBoxContainer/HBoxContainer/NameLabel
+onready var health_label: Label = $MarginContainer/VBoxContainer/Container/VBoxContainer/HBoxContainer/HealthContainer/HealthLabel
+onready var attack_label: Label = $MarginContainer/VBoxContainer/Container/VBoxContainer/StatsContainer/AttackContainer/AttackLabel
+onready var magic_label: Label = $MarginContainer/VBoxContainer/Container/VBoxContainer/StatsContainer/MagicContainer/MagicLabel
+onready var speed_label: Label = $MarginContainer/VBoxContainer/Container/VBoxContainer/StatsContainer/SpeedContainer/SpeedLabel
+onready var defense_label: Label = $MarginContainer/VBoxContainer/Container/VBoxContainer/StatsContainer/DefenseContainer/DefenseLabel
+onready var equip_label: Label = $MarginContainer/VBoxContainer/EquipContainer/EquipLabel
 
 signal hero_selected
 

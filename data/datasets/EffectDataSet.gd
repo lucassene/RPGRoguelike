@@ -1,3 +1,5 @@
+extends Resource
+
 var id: int
 var desc: String
 var base_value: int

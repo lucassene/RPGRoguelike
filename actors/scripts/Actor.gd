@@ -40,10 +40,8 @@ func set_parent_cell(value):
 func _physics_process(delta):
 	_move(delta)
 
-func initialize(_actor_repo,_skill_repo,_effect_repo,_actor,cell):
-	actor_repo = _actor_repo
-	effect_repo = _effect_repo
-	skill_repo = _skill_repo
+func initialize(_actor,cell):
+	_load_repositories()
 	parent_cell = cell
 	health_bar.initialize(actor_dataset.get_max_health())
 
@@ -86,6 +84,10 @@ func teleport_to(tile):
 	global_position = parent_cell.map_to_world(tile)
 	parent_cell.remove_from_taken(current_tile)
 	current_tile = tile
+
+func _load_repositories():
+	effect_repo = RepoHub.get_effect_repo()
+	skill_repo = RepoHub.get_skill_repo()
 
 func _show_damage_indicator(value):
 	if value > 0:

@@ -1,27 +1,32 @@
 extends Node2D
 
 onready var hero_scene = preload("res://actors/scenes/Hero.tscn")
-onready var cell_repo = preload("res://data/repositories/CellRepo.gd").new()
-onready var hero_repo = preload("res://data/repositories/HeroRepo.gd").new()
-onready var skill_repo = preload("res://data/repositories/SkillRepo.gd").new()
-
 onready var fade_map = $FadeMap
 onready var hud = $CanvasLayer/HUD
 onready var tween: Tween = $Tween
 onready var heroes_container = $Heroes
 onready var cell_container = $CellContainer
 
+var cell_repo
+var hero_repo
+var skill_repo
 var current_cell
 var new_cell
 var player_party = []
 var transition_direction
 
 func _ready():
+	_load_repositories()
 	_connect_signals()
 	current_cell = _generate_new_cell()
 	_instance_heroes()
-	hud.initialize(cell_repo)
+	hud.initialize()
 	_update_hud()
+
+func _load_repositories():
+	skill_repo = RepoHub.get_skill_repo()
+	cell_repo = RepoHub.get_cell_repo()
+	hero_repo = RepoHub.get_hero_repo()
 
 func _connect_signals():
 	EventHub.connect("hud_direction_pressed",self,"_on_hud_direction_pressed")
@@ -35,7 +40,7 @@ func _generate_new_cell(cell_type = null):
 	cell_container.add_child(cell)
 	cell_container.move_child(cell,0)
 	cell_container.visible = true
-	cell.initialize(self,cell_repo,skill_repo,cell_type)
+	cell.initialize(self,cell_type)
 	return cell
 
 func _update_hud():
@@ -60,13 +65,13 @@ func _instance_heroes():
 	for hero_data in heroes:
 		var hero = hero_scene.instance()
 		heroes_container.add_child(hero)
-		hero.initialize(hero_repo,skill_repo,current_cell.get_effect_repo(),hero_data,current_cell)
+		hero.initialize(hero_data,current_cell)
 		hero.connect("destination_reached",self,"_on_player_reached_destination")
 		_spawn_hero(hero)
 		player_party.append(hero)
 
 func _spawn_hero(hero):
-	var spawn_tile = current_cell.get_hero_spawn()
+	var spawn_tile = current_cell.get_hero_spawn(hero)
 	var spawn_position = current_cell.get_actor_spawn_position(spawn_tile)
 	hero.set_parent_cell(current_cell)
 	hero.spawn(spawn_tile,spawn_position)

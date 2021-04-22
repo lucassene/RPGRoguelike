@@ -15,3 +15,6 @@ func insert_hero_skill(hero_id,skill_id):
 		slots = 1
 	}
 	return skill_dao.insert_hero_skill(skill)
+
+func get_skill_area(area_id):
+	return skill_dao.get_area(area_id)

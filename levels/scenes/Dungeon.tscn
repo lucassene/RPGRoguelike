@@ -30,7 +30,16 @@ tile_data = PoolIntArray( 0, 1, 0, 1, 1, 0, 2, 1, 0, 3, 1, 0, 4, 1, 0, 5, 1, 0, 
 layer = 2
 
 [node name="HUD" parent="CanvasLayer" instance=ExtResource( 3 )]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -540.0
+margin_top = -960.0
+margin_right = 540.0
+margin_bottom = 960.0
 
 [node name="Tween" type="Tween" parent="."]
 playback_process_mode = 0
+
 [connection signal="tween_completed" from="Tween" to="." method="_on_Tween_tween_completed"]

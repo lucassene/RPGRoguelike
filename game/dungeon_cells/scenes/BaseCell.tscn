@@ -1,8 +1,10 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://game/dungeon_cells/scripts/DungeonCell.gd" type="Script" id=1]
 [ext_resource path="res://helpers/scenes/Waypoint.tscn" type="PackedScene" id=2]
 [ext_resource path="res://resources/tilesdata/overlay_tileset.tres" type="TileSet" id=3]
+[ext_resource path="res://assets/textures/hover_light.png" type="Texture" id=4]
+[ext_resource path="res://helpers/scripts/SkillHandler.gd" type="Script" id=5]
 
 [node name="BaseCell" type="TileMap"]
 cell_size = Vector2( 180, 180 )
@@ -43,3 +45,10 @@ format = 1
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
 visible = false
 color = Color( 0.239216, 0.239216, 0.239216, 1 )
+
+[node name="TileLight" type="Light2D" parent="."]
+texture = ExtResource( 4 )
+mode = 2
+
+[node name="SkillHandler" type="Node" parent="."]
+script = ExtResource( 5 )

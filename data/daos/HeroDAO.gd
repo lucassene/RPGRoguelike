@@ -16,5 +16,13 @@ static func get_hero_equipment(hero_id):
 	var query = "SELECT equip.* from hero_equip INNER JOIN equip ON hero_equip.equipID = equip.ID WHERE hero_equip.heroID = %s" % hero_id
 	return DataAccess.query(query)
 
+static func count_existing_heroes():
+	var query = "SELECT COUNT(*) FROM hero"
+	return DataAccess.query(query)[0]["COUNT(*)"]
+	
+static func clear_heroes():
+	var query = "DELETE FROM hero"
+	return DataAccess.query(query)
+
 static func insert_new_hero(hero):
 	return DataAccess.insert(HERO_TABLE,hero)

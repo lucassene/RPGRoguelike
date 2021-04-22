@@ -1,16 +1,15 @@
 extends TileMap
 class_name DungeonCell
 
-onready var enemy_repo = preload("res://data/repositories/EnemyRepo.gd").new()
-onready var effect_repo = preload("res://data/repositories/EffectRepo.gd").new()
 onready var enemy_scene = preload("res://actors/scenes/Enemy.tscn")
 onready var npc_scene = preload("res://actors/scenes/NPC.tscn")
-
+onready var skill_handler = $SkillHandler
 onready var waypoint_container = $Waypoints
 onready var npc_container = $NPCs
 onready var overlay_map: TileMap = $OverlayMap
 onready var fog_map: TileMap = $FogMap
 onready var canvas_modulate: CanvasModulate = $CanvasModulate
+onready var tile_light: Light2D = $TileLight
 
 export(Vector2) var begin = Vector2(1,2)
 export(Vector2) var end = Vector2(8,12)
@@ -28,10 +27,15 @@ const NORTH_EAST_NEIGHBOR = Vector2(-1,1)
 const SOUTH_EAST_NEIGHBOR = Vector2(1,1)
 const SOUTH_WEST_NEIGHBOR = Vector2(1,-1)
 const NORTH_WEST_NEIGHBOR = Vector2(-1,-1)
+const MOVE_NEIGHBORS = [NORTH_NEIGHBOR,EAST_NEIGHBOR,SOUTH_NEIGHBOR,WEST_NEIGHBOR]
+const TARGET_NEIGHBORS = [NORTH_NEIGHBOR,NORTH_EAST_NEIGHBOR,EAST_NEIGHBOR,SOUTH_EAST_NEIGHBOR,SOUTH_NEIGHBOR,SOUTH_WEST_NEIGHBOR,WEST_NEIGHBOR,NORTH_WEST_NEIGHBOR]
 
 enum {TILE_OK,TILE_BLOCKED}
 enum {EMPTY,ALLY,ENEMY,NPC,ITEM}
-enum {NORMAL,NPC_SELECTION,SPACE_SELECTION}
+enum {NORMAL,ACTOR_SELECTION,EMPTY_SPACE_SELECTION,SPACE_SELECTION}
+
+var enemy_repo
+var effect_repo
 
 var dungeon
 var exits = [] setget ,get_exits
@@ -39,9 +43,9 @@ var tile_list = []
 var cell_type setget set_type,get_type
 var cell_repo
 var skill_repo
-var tile_taken = []
-var enemy_party = []
-var player_party = []
+var taken_tiles = {}
+var enemy_party = [] setget ,get_enemies
+var player_party = [] setget ,get_allies
 var npc
 var in_battle = false
 var cell_mode = NORMAL
@@ -55,16 +59,30 @@ func set_type(value):
 func get_type():
 	return cell_type
 
+func get_enemies():
+	return enemy_party
+
+func get_allies():
+	return player_party
+
+func get_everybody():
+	return player_party + enemy_party
+
 func _ready():
 	randomize()
+	_load_repositories()
 	for waypoint in waypoint_container.get_children():
 		exits.append(waypoint.get_direction())
 
-func initialize(_dungeon,_cell_repo,_skill_repo,type):
+func _load_repositories():
+	cell_repo = RepoHub.get_cell_repo()
+	skill_repo = RepoHub.get_skill_repo()
+	enemy_repo = RepoHub.get_enemy_repo()
+	effect_repo = RepoHub.get_effect_repo()
+	
+func initialize(_dungeon,type):
 	dungeon = _dungeon
-	cell_repo = _cell_repo
-	skill_repo = _skill_repo
-	tile_taken.clear()
+	taken_tiles.clear()
 	set_type(type)
 	_populate_cell()
 
@@ -78,10 +96,10 @@ func get_exit_position(direction):
 			return [wp_coords,map_to_world(wp_coords)]
 	return null
 
-func get_hero_spawn():
+func get_hero_spawn(hero):
 	var spawn_range = [hero_spawn_begin,hero_spawn_end]
 	var spawn_point = _get_random_spawn(spawn_range)
-	tile_taken.append(spawn_point)
+	_take_tile(hero,spawn_point)
 	return spawn_point
 
 func add_hero(hero):
@@ -96,11 +114,34 @@ func get_cell_size():
 func get_actor_spawn_position(spawn_tile):
 	return map_to_world(spawn_tile)
 
-func get_effect_repo():
-	return effect_repo
-
 func remove_from_taken(tile):
-	tile_taken.erase(tile)
+	taken_tiles.erase(tile)
+
+func get_tile_content(tile):
+	return taken_tiles.get(tile)
+
+func is_tile_blocked(tile):
+	return false if get_cellv(tile) == 0 else true
+
+func is_tile_taken(tile):
+	if taken_tiles.get(tile) != null:
+		return true
+	return false
+
+func is_tile_available(tile):
+	if not is_tile_taken(tile) and not is_tile_blocked(tile):
+		return true
+	return false
+
+func is_tile_valid(tile):
+	if tile.x < begin.x or tile.x > end.x:
+		return false
+	if tile.y < begin.y or tile.y > end.y:
+		return false
+	return true
+
+func _take_tile(hero,tile):
+	taken_tiles[tile] = hero
 
 func _populate_cell():
 	var npcs_needed = cell_repo.get_npcs_needed(cell_type)
@@ -122,7 +163,7 @@ func _instance_enemies():
 		random = randi() % enemies.size()
 		enemy = enemy_scene.instance()
 		npc_container.add_child(enemy)
-		enemy.initialize(enemy_repo,effect_repo,skill_repo,enemies[random],self)
+		enemy.initialize(enemies[random],self)
 		enemy_party.append(enemy)
 		_spawn_enemy(enemy)
 
@@ -132,7 +173,7 @@ func _instance_npc():
 	_spawn_npc(new_npc)
 	npc = new_npc
 
-func _get_actor_tile_spawn(actor_type):
+func _get_actor_tile_spawn(actor,actor_type):
 	var spawn_range = PoolVector2Array()
 	var spawn_point = Vector2.ZERO
 	if actor_type == GlobalVars.actor_type.ENEMY:
@@ -141,7 +182,7 @@ func _get_actor_tile_spawn(actor_type):
 	else:
 		spawn_range = [npc_spawn,npc_spawn]
 		spawn_point = npc_spawn
-		tile_taken.append(npc_spawn)
+		taken_tiles[spawn_point] = actor
 	return spawn_point
 
 func _get_random_spawn(spawn_range):
@@ -151,20 +192,20 @@ func _get_random_spawn(spawn_range):
 		var y_factor = int(spawn_range[1].y - spawn_range[0].y) + 1
 		var rand_x = randi() % x_factor + int(spawn_range[0].x)
 		var rand_y = randi() % y_factor + int(spawn_range[0].y)
-		var tile_id = get_cellv(Vector2(rand_x,rand_y))
-		if not _is_tile_blocked(tile_id) and tile_taken.find(Vector2(rand_x,rand_y)) == -1:
-			spawn = Vector2(rand_x,rand_y)
+		var tile = Vector2(rand_x,rand_y)
+		if is_tile_available(tile):
+			spawn = tile
 	return spawn
 
 func _spawn_enemy(enemy):
-	var spawn_tile = _get_actor_tile_spawn(GlobalVars.actor_type.ENEMY)
-	tile_taken.append(spawn_tile)
+	var spawn_tile = _get_actor_tile_spawn(enemy,GlobalVars.actor_type.ENEMY)
+	taken_tiles[spawn_tile] = enemy
 	var spawn_position = get_actor_spawn_position(spawn_tile)
 	enemy.spawn(spawn_tile,spawn_position)
 
 func _spawn_npc(new_npc):
-	var spawn_tile = _get_actor_tile_spawn(GlobalVars.actor_type.NPC)
-	tile_taken.append(spawn_tile)
+	var spawn_tile = _get_actor_tile_spawn(new_npc,GlobalVars.actor_type.NPC)
+	taken_tiles[spawn_tile] = new_npc
 	var spawn_position = get_actor_spawn_position(spawn_tile)
 	new_npc.spawn(spawn_tile,spawn_position)
 
@@ -177,17 +218,5 @@ func _clear_npcs():
 func _tile_action(_tile):
 	pass
 
-func _get_tile_content(tile):
-	if tile_taken.find(tile) == -1:
-		return EMPTY
-
 func _get_enemy_count():
-	return randi() % 3 + 1
-
-func _is_tile_blocked(tile):
-	return false if tile == 0 else true
-
-func _is_tile_taken(tile):
-	if tile_taken.find(tile) != -1:
-		return true
-	return false
+	return randi() % 3 + 2

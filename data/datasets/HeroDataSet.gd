@@ -17,8 +17,8 @@ var stats = {}
 var skills = [] setget set_skills,get_skills
 var equips = []
 
-func _init(hero,_effect_repo):
-	effect_repo = _effect_repo
+func _init(hero):
+	effect_repo = RepoHub.get_effect_repo()
 	skill_dataset = load(skill_dataset)
 	equip_dataset = load(equip_dataset)
 	id = hero.ID
@@ -53,7 +53,7 @@ func get_speed():
 func set_skills(_skills):
 	var new_skill
 	for skill in _skills:
-		new_skill = skill_dataset.new(effect_repo,skill)
+		new_skill = skill_dataset.new(skill)
 		skills.append(new_skill)
 	_add_end_turn_skill()
 
@@ -66,7 +66,7 @@ func has_skills():
 	return false
 
 func add_skill(skill):
-	var new_skill = skill_dataset.new(effect_repo,skill)
+	var new_skill = skill_dataset.new(skill)
 	skills.append(new_skill)
 
 func get_stat(stat):
@@ -103,6 +103,8 @@ func _add_end_turn_skill():
 		name = "End Turn",
 		rangeID = GlobalVars.skill_range.SELF,
 		targetID = GlobalVars.skill_target.SELF,
+		selectorID = GlobalVars.skill_selector.SELF,
+		areaID = GlobalVars.skill_area.TILE,
 		effect1ID = 0,
 		effect2ID = null,
 		effect3ID = null

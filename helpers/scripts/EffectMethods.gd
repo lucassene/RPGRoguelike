@@ -1,4 +1,4 @@
-extends Node
+extends Resource
 
 func _get_magnitude(effect,caster):
 	var value = _get_stat_value(effect,caster)

@@ -35,6 +35,7 @@ config/icon="res://icon.png"
 GlobalVars="*res://autoloads/scripts/GlobalVars.gd"
 DataAccess="*res://autoloads/scripts/DataAccess.gd"
 EventHub="*res://autoloads/scripts/EventHub.gd"
+RepoHub="*res://autoloads/scripts/RepoHub.gd"
 
 [debug]
 
@@ -86,8 +87,9 @@ pointing/emulate_touch_from_mouse=true
 [rendering]
 
 quality/driver/driver_name="GLES2"
-quality/2d/use_pixel_snap=true
+2d/snapping/use_gpu_pixel_snap=true
 vram_compression/import_etc=true
 vram_compression/import_etc2=false
 quality/depth/hdr=false
 environment/default_environment="res://default_env.tres"
+quality/2d/use_pixel_snap=true

@@ -56,11 +56,22 @@ size_flags_vertical = 3
 custom_constants/separation = 60
 alignment = 1
 
-[node name="BeginButton" type="Button" parent="MarginContainer/VBoxContainer2/VBoxContainer"]
+[node name="Continue" type="Button" parent="MarginContainer/VBoxContainer2/VBoxContainer"]
 margin_left = 220.0
-margin_top = 269.0
+margin_top = 179.0
 margin_right = 620.0
-margin_bottom = 389.0
+margin_bottom = 299.0
+rect_min_size = Vector2( 400, 120 )
+size_flags_horizontal = 4
+size_flags_vertical = 4
+custom_fonts/font = ExtResource( 1 )
+text = "Continue"
+
+[node name="NewGame" type="Button" parent="MarginContainer/VBoxContainer2/VBoxContainer"]
+margin_left = 220.0
+margin_top = 359.0
+margin_right = 620.0
+margin_bottom = 479.0
 rect_min_size = Vector2( 400, 120 )
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -69,13 +80,15 @@ text = "New Game"
 
 [node name="ExitButton" type="Button" parent="MarginContainer/VBoxContainer2/VBoxContainer"]
 margin_left = 220.0
-margin_top = 449.0
+margin_top = 539.0
 margin_right = 620.0
-margin_bottom = 569.0
+margin_bottom = 659.0
 rect_min_size = Vector2( 400, 120 )
 size_flags_horizontal = 4
 size_flags_vertical = 4
 custom_fonts/font = ExtResource( 1 )
 text = "Exit"
-[connection signal="pressed" from="MarginContainer/VBoxContainer2/VBoxContainer/BeginButton" to="." method="_on_NewButton_pressed"]
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer2/VBoxContainer/Continue" to="." method="_on_Continue_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer2/VBoxContainer/NewGame" to="." method="_on_NewGame_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer2/VBoxContainer/ExitButton" to="." method="_on_ExitButton_pressed"]

@@ -24,23 +24,20 @@ func _ready():
 func _input(event):
 	get_viewport().unhandled_input(event)
 
-func initialize(data):
-	cell_repo = data
-	navigation_menu.initialize(cell_repo)
+func initialize():
+	cell_repo = RepoHub.get_cell_repo()
+	navigation_menu.initialize()
 
 func update_hud(_cell_type):
 	cell_type = _cell_type
 	cell_label.text = cell_repo.get_cell_type_desc(cell_type)
 	_set_hud_mode()
 
-func can_drop_data(_position, _data):
+func can_drop_data(_position,_data):
 	return true if mode == BATTLE else false
 
-func drop_data(position, _data):
+func drop_data(_position,_data):
 	cancel_button.hide()
-	var global_touch_position = get_canvas_transform().xform_inv(position)
-	print(global_touch_position)
-	EventHub.emit_signal("skill_dropped",global_touch_position)
 
 func _set_hud_mode():
 	mode = cell_repo.get_cell_group(cell_type)

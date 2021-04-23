@@ -7,7 +7,7 @@ var effect_repo
 var id: int setget ,get_id
 var name: String setget ,get_name
 var max_health: int setget ,get_max_health
-var current_health: int
+var current_health: int setget ,get_current_health
 var base_speed: int
 var current_speed: int setget ,get_speed
 var base_attack: int
@@ -47,6 +47,9 @@ func get_name():
 func get_max_health():
 	return max_health
 
+func get_current_health():
+	return current_health
+
 func get_speed():
 	return current_speed
 
@@ -81,7 +84,7 @@ func set_equipment(equipment):
 
 func apply_damage(value):
 	if value <= 0:
-		current_health -= int(clamp(value,0,max_health))
+		current_health += int(clamp(abs(value),0,max_health))
 		return value
 	else:
 		var damage = int(max(0,value - stats.defense))

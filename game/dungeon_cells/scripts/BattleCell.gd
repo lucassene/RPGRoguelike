@@ -56,6 +56,7 @@ func _physics_process(_delta):
 				selection_tiles = calculate_selection_tiles(tile,skill_handler.get_area_value())
 				_update_selection_highlight()
 			else:
+				tile_light.global_position = Vector2.ZERO
 				tile_light.visible = false
 				_clear_prior_selection()
 				last_hovered_tile = null
@@ -63,8 +64,8 @@ func _physics_process(_delta):
 func _process_screen_touch(event):
 	if event is InputEventScreenTouch:
 		var global_touch_position = get_canvas_transform().xform_inv(event.position)
+		var tile_touched = world_to_map(global_touch_position)
 		if event.is_pressed():
-			var tile_touched = world_to_map(global_touch_position)
 			if in_battle and cell_mode == NORMAL and _is_hero_turn() and not has_moved:
 				if highlighted_tiles.find(tile_touched) != -1:
 					_move_actor(tile_touched)
@@ -72,11 +73,14 @@ func _process_screen_touch(event):
 				_process_skill(global_touch_position)
 		elif is_dragging:
 			_stop_skill_drag()
-			_process_skill(global_touch_position)
+			if is_tile_valid(tile_touched) and not is_tile_blocked(tile_touched):
+				_process_skill(global_touch_position)
+			else:
+				EventHub.emit_signal("skill_canceled")
 
 func _process_screen_drag(event):
 	if is_dragging and event is InputEventScreenDrag:
-		drag_position = get_canvas_transform().xform_inv(event.position)	
+		drag_position = get_canvas_transform().xform_inv(event.position)
 
 func _move_actor(tile):
 	_clear_highlighted_tiles()
@@ -107,14 +111,17 @@ func _disconnect_signals():
 		actor.disconnect("actor_killed",self,"_on_actor_killed")
 		actor.set_health_bar_visibility(false)
 
-func _prepare_for_next_turn():
+func _clean_turn():
 	cell_mode = NORMAL
 	_toggle_actor_lights_off()
 	overlay_map.show()
-	canvas_modulate.hide()
+	set_canvas_modulate(false)
+
+func set_canvas_modulate(value):
+	canvas_modulate.visible = value
 
 func next_turn():
-	_prepare_for_next_turn()
+	_clean_turn()
 	_change_turn()
 	has_moved = false
 	if turn_order.size() > 0:
@@ -167,9 +174,9 @@ func calculate_movement(_tile,speed):
 	var checked_tiles = []
 	for t in to_check:
 		if checked_tiles.find(t.tile) == -1:
-			for n in _get_neighbors(t.tile,MOVE_NEIGHBORS):
+			for n in get_neighbors(t.tile,MOVE_NEIGHBORS):
 				var nt ={tile = n,value = t.value + 1}
-				if is_tile_available(n):
+				if is_tile_available(n) and movement.find(nt.tile) == -1:
 					overlay_map.set_cell(n.x,n.y,TILE_OK)
 					movement.append(nt.tile)
 					if nt.value < speed:
@@ -185,16 +192,17 @@ func calculate_selection_tiles(_tile,area):
 	if area > 0:
 		for t in to_check:
 			if checked_tiles.find(t.tile) == -1:
-				for n in _get_neighbors(t.tile,MOVE_NEIGHBORS):
+				for n in get_neighbors(t.tile,MOVE_NEIGHBORS):
 					var nt ={tile = n,value = t.value + 1}
 					if not is_tile_blocked(n):
-						tiles.append(nt.tile)
+						if tiles.find(nt.tile) == -1:
+							tiles.append(nt.tile)
 						if nt.value < area:
 							to_check.append(nt)
 				checked_tiles.append(t.tile)
 	return tiles
 
-func _get_neighbors(tile,list):
+func get_neighbors(tile,list):
 	var neighbors = []
 	for direction in list:
 		neighbors.append(tile + direction)
@@ -244,11 +252,14 @@ func _is_hero_turn():
 func _stop_skill_drag():
 	drag_position = null
 	is_dragging = false
+	tile_light.visible = false
 	_clear_prior_selection()
 
-func _process_skill(drop_position):
+func _process_skill(touched_position):
+	print("processando skill")
+	var tile = world_to_map(touched_position)
+	selection_tiles = calculate_selection_tiles(tile,skill_handler.get_area_value())
 	_show_highlighted_tiles()
-	var tile = world_to_map(drop_position)
 	var has_target = false
 	match cell_mode:
 		ACTOR_SELECTION:
@@ -258,7 +269,8 @@ func _process_skill(drop_position):
 		SPACE_SELECTION:
 			has_target = skill_handler.process_space_selection(tile,selection_tiles)
 	if not has_target:
-		_prepare_for_next_turn()
+		print("sem target, cancelando...")
+		EventHub.emit_signal("skill_canceled")
 
 func get_current_fighter_tile():
 	return turn_order[current_fighter].get_current_tile()
@@ -284,9 +296,6 @@ func set_space_selection(tile,area):
 func clear_tile_left(tile):
 	fog_map.set_cellv(tile,-1)
 
-func set_canvas_module(value):
-	canvas_modulate.visible = value
-
 func _on_actor_movement_started():
 	can_act = false
 
@@ -309,7 +318,7 @@ func _on_hud_ready():
 	_begin_first_turn()
 
 func _on_skill_canceled():
-	_prepare_for_next_turn()
+	_clean_turn()
 
 func _on_skill_executed():
 	cell_mode = NORMAL
@@ -319,5 +328,6 @@ func _on_actor_selected(actor):
 	if cell_mode == ACTOR_SELECTION:
 		skill_handler.process_skill_on_target(actor)
 
-func _on_skill_drag_started():
+func _on_skill_drag_started(button_position,_preview,_skill):
+	drag_position = button_position
 	is_dragging = true

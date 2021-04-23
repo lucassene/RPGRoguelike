@@ -8,6 +8,7 @@ var viable_targets = []
 
 func _ready():
 	EventHub.connect("skill_selected",self,"_on_skill_selected")
+	EventHub.connect("skill_drag_started",self,"_on_skill_drag_started")
 
 func initialize(_cell):
 	cell = _cell
@@ -20,16 +21,19 @@ func process_actor_selection(tile):
 		for target in viable_targets:
 			if tile == target.get_current_tile():
 				var targets = [target]
-				_execute_effects(active_skill.get_effects(),targets)
-				return true
+				if targets.size() > 0:
+					_execute_effects(active_skill.get_effects(),targets)
+					return true
 	return false
 
 func process_space_selection(tile,affected_tiles):
 	if cell.is_tile_valid(tile) and not cell.is_tile_blocked(tile):
 		var possible_targets = _get_possible_targets()
 		var targets = _get_targets(affected_tiles,possible_targets)
-		_execute_effects(active_skill.get_effects(),targets)
-		return true
+		if targets.size() > 0:
+			_execute_effects(active_skill.get_effects(),targets)
+			return true
+	print("no targets!")
 	return false
 
 func process_empty_space_selection(tile):
@@ -64,7 +68,11 @@ func _process_self_skill(tile):
 			possible_targets += _get_possible_targets()
 			var affected_tiles = cell.calculate_selection_tiles(tile,active_skill.get_area_value())
 			targets = _get_targets(affected_tiles,possible_targets)
-	_execute_effects(active_skill.get_effects(),targets)
+	if targets.size() > 0:
+		_execute_effects(active_skill.get_effects(),targets)
+	else:
+		print("No targets!")
+		EventHub.emit_signal("skill_canceled")
 
 func _on_skill_selected(skill):
 	active_skill = skill
@@ -74,6 +82,7 @@ func _on_skill_selected(skill):
 		GlobalVars.skill_selector.SELF:
 			_process_self_skill(origin_tile)
 		GlobalVars.skill_selector.ENEMY:
+			print(origin_tile)
 			cell.set_actor_selection(origin_tile,active_skill.get_area_value())
 			_highlight_viable_targets(origin_tile,cell.get_enemies(),skill_range)
 		GlobalVars.skill_selector.ALLY:
@@ -101,7 +110,7 @@ func _highlight_viable_targets(origin_tile,party,skill_range):
 		if actor and skill_range != GlobalVars.skill_range.MELEE or (skill_range == GlobalVars.skill_range.MELEE and cell.is_target_in_melee_range(origin_tile,target_tile)):
 			actor.toggle_light(true)
 			viable_targets.append(actor)
-		cell.set_canvas_module(true)
+	cell.set_canvas_modulate(true)
 
 func _get_possible_targets():
 	var targets = []
@@ -120,3 +129,6 @@ func _get_targets(affected_tiles,possible_targets):
 		if affected_tiles.find(target.get_current_tile()) != -1:
 			targets.append(target)
 	return targets
+
+func _on_skill_drag_started(_position,_preview,skill):
+	_on_skill_selected(skill)

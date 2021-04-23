@@ -21,4 +21,3 @@ func _on_hero_turn_begin(skills):
 	clear_skills_menu()
 	show()
 	_instance_skills(skills)
-

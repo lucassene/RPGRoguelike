@@ -114,8 +114,10 @@ func get_cell_size():
 func get_actor_spawn_position(spawn_tile):
 	return map_to_world(spawn_tile)
 
-func remove_from_taken(tile):
-	taken_tiles.erase(tile)
+func change_actor_tile(actor,to_remove,to_take = null):
+	taken_tiles.erase(to_remove)
+	if to_take:
+		taken_tiles[to_take] = actor
 
 func get_tile_content(tile):
 	return taken_tiles.get(tile)

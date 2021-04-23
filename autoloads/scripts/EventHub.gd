@@ -9,11 +9,12 @@ signal start_rest
 signal turn_changed(actor_name,is_enemy)
 signal battle_ended
 signal skill_canceled
+signal skill_clicked(value)
 
 #Game Signals
 signal skill_selected(skill)
 signal skill_executed()
 signal actor_selected(actor)
 signal skill_dropped(position)
-signal skill_drag_started
+signal skill_drag_started(drag_position,preview,skill)
 

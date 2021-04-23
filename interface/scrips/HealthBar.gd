@@ -21,10 +21,15 @@ func update_bar(damage):
 
 func _set_tint_tween(new_value):
 	var portion = float(new_value) / float(max_health)
-	if portion >= 0.5:
-		var new_tint = max((100 - portion*100) * 0.02,1.0)
+	var new_tint
+	if portion >= 0.75:
+		new_tint = min((100 - portion*100) * 0.02,0.5)
+		tween.interpolate_property(self,"tint_progress:r",tint_progress.r,new_tint,0.25,Tween.TRANS_LINEAR,Tween.EASE_OUT)
+		tween.interpolate_property(self,"tint_progress:g",tint_progress.r,1.0,0.25,Tween.TRANS_LINEAR,Tween.EASE_OUT)
+	elif portion >= 0.5:
+		new_tint = max((100 - portion*100) * 0.02,1.0)
 		tween.interpolate_property(self,"tint_progress:r",tint_progress.r,new_tint,0.25,Tween.TRANS_LINEAR,Tween.EASE_OUT)
 	else:
-		var new_tint = max(0.0,(portion*100) / 50)
+		new_tint = max(0.0,(portion*100) / 50)
 		tween.interpolate_property(self,"tint_progress:r",tint_progress.r,1.0,0.25,Tween.TRANS_LINEAR,Tween.EASE_OUT)
 		tween.interpolate_property(self,"tint_progress:g",tint_progress.g,new_tint,0.25,Tween.TRANS_LINEAR,Tween.EASE_OUT)

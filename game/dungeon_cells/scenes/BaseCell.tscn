@@ -47,6 +47,7 @@ visible = false
 color = Color( 0.239216, 0.239216, 0.239216, 1 )
 
 [node name="TileLight" type="Light2D" parent="."]
+visible = false
 texture = ExtResource( 4 )
 mode = 2
 

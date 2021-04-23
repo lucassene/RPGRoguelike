@@ -3,7 +3,7 @@ extends Resource
 var id: int
 var name: String setget ,get_name
 var max_health: int setget ,get_max_health
-var current_health: int
+var current_health: int setget ,get_current_health
 var base_speed: int
 var speed: int
 var base_defense: int
@@ -25,9 +25,12 @@ func get_name():
 func get_max_health():
 	return max_health
 
+func get_current_health():
+	return current_health
+
 func apply_damage(value):
 	if value <= 0:
-		current_health -= int(clamp(value,0,max_health))
+		current_health -= int(clamp(abs(value),0,max_health))
 		return value
 	else:
 		var damage = int(max(0,value - defense))

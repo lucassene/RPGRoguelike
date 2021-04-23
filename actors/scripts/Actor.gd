@@ -46,7 +46,7 @@ func initialize(_actor,cell):
 	health_bar.initialize(actor_dataset.get_max_health())
 
 func move_to(tile,target):
-	parent_cell.remove_from_taken(current_tile)
+	parent_cell.change_actor_tile(self,current_tile,target)
 	current_tile = tile
 	current_target = target
 	emit_signal("movement_started")
@@ -71,7 +71,7 @@ func get_stat(stat):
 
 func apply_damage(value):
 	var damage = actor_dataset.apply_damage(value)
-	print(actor_dataset.get_name()," suffered ",damage," damage.")
+	print(actor_dataset.get_name()," suffered ",damage," damage and is now with ",actor_dataset.get_current_health()," of HP.")
 	_show_damage_indicator(damage)
 	health_bar.update_bar(damage)
 	if actor_dataset.is_dead(): emit_signal("actor_killed",self)
@@ -82,7 +82,7 @@ func modify_defense(value):
 
 func teleport_to(tile):
 	global_position = parent_cell.map_to_world(tile)
-	parent_cell.remove_from_taken(current_tile)
+	parent_cell.change_actor_tile(self,current_tile,tile)
 	current_tile = tile
 
 func _load_repositories():
